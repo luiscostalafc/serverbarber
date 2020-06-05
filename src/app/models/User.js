@@ -10,15 +10,6 @@ class User extends Model {
 				password: Sequelize.VIRTUAL,
 				password_hash: Sequelize.STRING,
 				provider: Sequelize.BOOLEAN,
-				phone: Sequelize.STRING,
-				zipcode: Sequelize.STRING,
-				street: Sequelize.STRING,
-				number: Sequelize.STRING,
-				complement: Sequelize.STRING,
-				district: Sequelize.STRING,
-				city: Sequelize.STRING,
-				state: Sequelize.STRING
-
 			},
 			{
 				sequelize,

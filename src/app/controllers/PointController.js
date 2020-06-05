@@ -2,28 +2,28 @@ import Point from '../models/Point';
 import { literal, where } from "sequelize";
 
 class PointController {
-  async store(req, res) {
-    const point = await Point.create(req.body);
+	async store(req, res) {
+		const point = await Point.create(req.body);
 
-    return res.json(point);
-  }
+		return res.json(point);
+	}
 
-  async index(req, res) {
-    const { latitude, longitude } = req.query;
+	async index(req, res) {
+		const { latitude, longitude } = req.query;
 
-    const haversine = `(6371 * acos(cos(radians(${latitude}))
+		const haversine = `(6371 * acos(cos(radians(${latitude}))
     * cos(radians(latitude))
     * cos(radians(longitude)
     - radians(${longitude}))
     + sin(radians(${latitude}))
     * sin(radians(latitude))))`;
 
-    const points = await Point.findAll({
-      where: where(literal(haversine), "<=", 10)
-    });
+		const points = await Point.findAll({
+			where: where(literal(haversine), "<=", 10)
+		});
 
-    return res.json(points);
-  }
+		return res.json(points);
+	}
 }
 
-export default new PointController;
+export default new PointController();
