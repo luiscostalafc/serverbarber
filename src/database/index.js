@@ -1,46 +1,39 @@
-import Sequelize from 'sequelize';
-import mongoose from 'mongoose';
+import postgresConnect from './postgresConnect';
+import redisConnect from './redisConnect';
+import mongoConnect from './mongoConnect';
 
-//User
+// User
 import User from '../app/models/User';
 import Category from '../app/models/Category';
 import File from '../app/models/File';
 import Appointment from '../app/models/Appointment';
 
-//Map
+// Map
 import Point from '../app/models/Point';
 
-
-import databaseConfig from '../config/database';
-
-const models =
-	[User,
-		File,
-		Appointment,
-		Category,
-		Point
-		];
+const models = [User, File, Appointment, Category, Point];
 
 class Database {
 	constructor() {
 		this.init();
+		this.redis();
 		this.mongo();
 	}
 
 	init() {
-		this.connection = new Sequelize(databaseConfig);
+		this.connection = postgresConnect();
 
 		models
 			.map(model => model.init(this.connection))
 			.map(model => model.associate && model.associate(this.connection.models));
 	}
 
+	redis() {
+		this.redisConnection = redisConnect();
+	}
+
 	mongo() {
-		this.mongoConnection = mongoose.connect(process.env.MONGO_URL, {
-			useNewUrlParser: true,
-			useFindAndModify: true,
-			useUnifiedTopology: true,
-		});
+		this.mongoConnection = mongoConnect();
 	}
 }
 

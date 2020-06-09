@@ -1,0 +1,40 @@
+version: "3"
+
+services:
+  app:
+    container_name: jackbarber_app
+    build: .
+    ports:
+      - "3000:3000"
+    command: yarn start
+    volumes:
+      - .:/usr/src/app
+    links:
+      - postgres
+      - mongo
+      - redis
+
+  postgres:
+    container_name: jackbarber_postgres
+    image: "postgres:9.4"
+    ports:
+      - "5432:5432"
+    environment:
+     POSTGRES_PASSWORD: ${DB_PASS}
+     POSTGRES_USER: ${DB_USER}
+
+  mongo:
+    container_name: jackbarber_mongo
+    image: mongo
+    volumes:
+      - ./docker/data:/data/db
+    ports:
+      - "27017:27017"
+
+  redis:
+    container_name: jackbarber_redis
+    image: redis
+    volumes:
+      - ./docker/redis:/redis/db
+    ports:
+      - "6379:6379"
