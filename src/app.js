@@ -6,8 +6,9 @@ import cors from 'cors';
 import Youch from 'youch';
 import * as Sentry from '@sentry/node';
 import 'express-async-errors';
-import io from 'socket.io';
 import http from 'http';
+import socketActions from './socket.io';
+// import io from 'socket.io';
 import routes from './routes';
 import sentryConfig from './config/sentry';
 
@@ -18,25 +19,16 @@ class App {
 		this.app = express();
 		this.server = http.Server(this.app);
 
-		Sentry.init(sentryConfig);
+		if (process.env.NODE_ENV !== 'dev') Sentry.init(sentryConfig);
 
 		this.middlewares();
+		this.socket();
 		this.routes();
 		this.exceptionHandler();
 	}
 
 	socket() {
-		this.io = io(this.server);
-
-		this.io.on('connection', socket => {
-			const { user_id } = socket.handshake.query;
-
-			this.connectedUsers[user_id] = socket.id;
-
-			socket.on('disconnect', () => {
-				delete this.connectedUsers[user_id];
-			});
-		});
+		this.io = socketActions(this.server);
 	}
 
 	middlewares() {

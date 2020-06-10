@@ -1,11 +1,13 @@
 import * as Yup from 'yup';
+import coloredLog from '../../lib/ColoredLog';
 import User from '../models/User';
 import File from '../models/File';
 import Category from '../models/Category';
 
-//import EnrollmentMail from '../jobs/EnrollmentMail';
-//import Queue from '../../lib/Queue';
+// import EnrollmentMail from '../jobs/EnrollmentMail';
+// import Queue from '../../lib/Queue';
 
+const emptyUser = { id: null, name: null, email: null, provider: null };
 class UserController {
 	async store(req, res) {
 		const schema = Yup.object().shape({
@@ -18,31 +20,58 @@ class UserController {
 				.min(6),
 		});
 
-		if (!(await schema.isValid(req.body))) {
-			return res.status(400).json({ error: 'validation fails' });
+		schema.validate(req.body, { abortEarly: false }).catch(err => {
+			return res
+				.status(422)
+				.set({ error: err.errors.join(', ') })
+				.json(emptyUser);
+		});
+
+		try {
+			const userExists = await User.findOne({
+				where: { email: req.body.email },
+			});
+			if (userExists) {
+				return res
+					.status(400)
+					.set({ error: 'User already exists' })
+					.json(emptyUser);
+			}
+		} catch (error) {
+			const errorMsg = error.stack;
+			console.error(
+				coloredLog(`UserController store search error: ${errorMsg}`, 'error')
+			);
+			return res
+				.status(400)
+				.set({ error: errorMsg })
+				.json(emptyUser);
 		}
 
-		const userExists = await User.findOne({ where: { email: req.body.email } });
-
-		if (userExists) {
-			return res.status(400).json({ error: 'User already exists' });
+		try {
+			const { id, name, email, provider } = await User.create(req.body);
+			return res.json({
+				id,
+				name,
+				email,
+				provider,
+			});
+		} catch (error) {
+			const errorMsg = error.stack;
+			console.error(
+				coloredLog(`UserController store create error: ${errorMsg}`, 'error')
+			);
+			return res
+				.status(400)
+				.set({ error: errorMsg })
+				.json(emptyUser);
 		}
-
-		const { id, name, email, provider } = await User.create(req.body);
-
 
 		// await Queue.add(EnrollmentMail.key, {
 		// 	id,
 		// 	name,
 		// 	email
 		// });
-
-		return res.json({
-			id,
-			name,
-			email,
-			provider,
-		});
 	}
 
 	async update(req, res) {
