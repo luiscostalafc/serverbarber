@@ -11,20 +11,19 @@ module.exports = {
 				type: Sequelize.STRING,
 				allowNull: false,
 			},
-			user_id: {
+			gender: {
 				type: Sequelize.INTEGER,
-				references: { model: 'users', key: 'id' },
-				onUpdate: 'CASCADE',
-				onDelete: 'SET NULL',
-				allowNull: true,
+				allowNull: false,
 			},
 			created_at: {
 				type: Sequelize.DATE,
 				allowNull: false,
+				defaultValue: new Date(),
 			},
 			updated_at: {
 				type: Sequelize.DATE,
 				allowNull: false,
+				defaultValue: new Date(),
 			},
 		});
 	},

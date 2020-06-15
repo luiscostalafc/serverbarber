@@ -1,5 +1,6 @@
+import { literal, where } from 'sequelize';
 import Point from '../models/Point';
-import { literal, where } from "sequelize";
+import CRUD from '../repository/crud';
 
 class PointController {
 	async store(req, res) {
@@ -18,8 +19,8 @@ class PointController {
     + sin(radians(${latitude}))
     * sin(radians(latitude))))`;
 
-		const points = await Point.findAll({
-			where: where(literal(haversine), "<=", 10)
+		const points = await CRUD.findAll(Point, {
+			where: where(literal(haversine), '<=', 10),
 		});
 
 		return res.json(points);

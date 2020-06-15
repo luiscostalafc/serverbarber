@@ -1,6 +1,7 @@
 import * as Yup from 'yup';
 import { startOfHour, parseISO, isBefore, format, subHours } from 'date-fns';
 import pt from 'date-fns/locale/pt';
+import CRUD from '../repository/crud';
 import User from '../models/User';
 import File from '../models/File';
 import Appointment from '../models/Appointment';
@@ -13,7 +14,7 @@ class AppointmentController {
 	async index(req, res) {
 		const { page = 1 } = req.query;
 
-		const appointments = await Appointment.findAll({
+		const appointments = await CRUD.findAll(Appointment, {
 			where: { user_id: req.userId, canceled_at: null },
 			order: ['date'],
 			attributes: ['id', 'date', 'past', 'cancelable'],
@@ -44,17 +45,16 @@ class AppointmentController {
 			date: Yup.date().required(),
 		});
 
-		if (!(await schema.isValid(req.body))) {
-			return res.status(400).json({ error: 'Validations fails' });
-		}
+		schema.validate(req.body, { abortEarly: false }).catch(err => {
+			return res
+				.status(422)
+				.set({ error: err.errors.join(', ') })
+				.json({});
+		});
 
 		const { provider_id, date } = req.body;
 
-		/**
-		 * Check if provider_id is a provider
-		 */
-
-		const isProvider = await User.findOne({
+		const isProvider = await CRUD.findOne(User, {
 			where: { id: provider_id, provider: true },
 		});
 
@@ -70,19 +70,13 @@ class AppointmentController {
 				.json({ error: `You can't create appointments with yourself` });
 		}
 
-		/**
-		 * Check for past dates
-		 */
 		const hourStart = startOfHour(parseISO(date));
 
 		if (isBefore(hourStart, new Date())) {
 			res.status(400).json({ error: 'Past dates are not permitted' });
 		}
 
-		/**
-		 * Check date availability
-		 */
-		const checkAvailability = await Appointment.findOne({
+		const checkAvailability = await CRUD.findOne(Appointment, {
 			where: {
 				provider_id,
 				canceled_at: null,
@@ -96,23 +90,24 @@ class AppointmentController {
 				.json({ error: 'Appointment date is not available' });
 		}
 
-		const appointment = await Appointment.create({
+		const appointment = await CRUD.create(Appointment, {
 			user_id: req.userId,
 			provider_id,
 			date: hourStart,
 		});
+		this.createNotification(req, hourStart, provider_id);
+		return res.json(appointment);
+	}
 
-		/**
-		 * Notify appointment provider
-		 */
-		const user = await User.findByPk(req.userId);
+	async createNotification(req, hourStart, provider_id) {
+		const user = await CRUD.findByPk(User, req.userId);
 		const formatedDate = format(
 			hourStart,
 			"'dia' dd 'de' MMMM', às ' H:mm'h'",
 			{ locale: pt }
 		);
 
-		const notification = await Notification.create({
+		const notification = await CRUD.create(Notification, {
 			content: `Novo agendamento de ${user.name}
 			para ${formatedDate}`,
 			user: provider_id,
@@ -123,12 +118,10 @@ class AppointmentController {
 		if (ownerSocket) {
 			req.io.to(ownerSocket).emit('notification', notification);
 		}
-
-		return res.json(appointment);
 	}
 
 	async delete(req, res) {
-		const appointment = await Appointment.findByPk(req.params.id, {
+		const appointment = await CRUD.findByPk(Appointment, req.params.id, {
 			include: [
 				{
 					model: User,

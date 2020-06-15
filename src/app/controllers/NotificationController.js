@@ -1,10 +1,10 @@
 import User from '../models/User';
 import Notification from '../schemas/Notification';
-
+import CRUD from '../repository/crud';
 
 class NotificationController {
 	async index(req, res) {
-		const checkIsProvider = await User.findOne({
+		const checkIsProvider = await CRUD.findOne(User, {
 			where: { id: req.userId, provider: true },
 		});
 
@@ -14,22 +14,24 @@ class NotificationController {
 				.json({ error: 'Only provider can load notifications' });
 		}
 
-		const notifications = await Notification.find({
-			user: req.userId,
-		})
-			.sort({ createdAt: 'desc' })
-			.limit(20);
+		const notifications = await CRUD.findAndSort(
+			Notification,
+			{
+				user: req.userId,
+			},
+			{ createdAt: 'desc' }
+		);
 
 		return res.json(notifications);
 	}
 
 	async update(req, res) {
-		const notification = await Notification.findByIdAndUpdate(
+		const notification = await CRUD.findByIdAndUpdate(
+			Notification,
 			req.params.id,
 			{ read: true },
 			{ new: true }
 		);
-
 
 		return res.json(notification);
 	}

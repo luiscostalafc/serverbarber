@@ -1,10 +1,11 @@
 import User from '../models/User';
 import File from '../models/File';
 import Category from '../models/Category';
+import CRUD from '../repository/crud';
 
 class ProviderController {
 	async index(req, res) {
-		const providers = await User.findAll({
+		const providers = await CRUD.findAll(User, {
 			where: { provider: true },
 			attributes: ['id', 'name', 'email', 'avatar_id', 'category_id'],
 			include: [
@@ -18,7 +19,6 @@ class ProviderController {
 					as: 'category',
 					attributes: ['name'],
 				},
-
 			],
 		});
 

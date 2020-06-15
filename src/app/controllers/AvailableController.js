@@ -9,6 +9,7 @@ import {
 } from 'date-fns';
 import { Op } from 'sequelize';
 import Appointment from '../models/Appointment';
+import CRUD from '../repository/crud';
 
 class AvailableController {
 	async index(req, res) {
@@ -20,7 +21,7 @@ class AvailableController {
 
 		const searchDate = Number(date);
 
-		const appointments = await Appointment.findAll({
+		const appointments = await CRUD.findAll(Appointment, {
 			where: {
 				provider_id: req.params.providerId,
 				canceled_at: null,

@@ -3,10 +3,11 @@ import { Op } from 'sequelize';
 
 import Appointment from '../models/Appointment';
 import User from '../models/User';
+import CRUD from '../repository/crud';
 
 class ScheduleController {
 	async index(req, res) {
-		const checkUserProvider = await User.findOne({
+		const checkUserProvider = CRUD.findOne(User, {
 			where: { id: req.userId, provider: true },
 		});
 
@@ -17,7 +18,7 @@ class ScheduleController {
 		const { date } = req.query;
 		const parseDate = parseISO(date);
 
-		const Appointments = await Appointment.findAll({
+		const Appointments = await CRUD.findAll(Appointment, {
 			where: {
 				provider_id: req.userId,
 				canceled_at: null,

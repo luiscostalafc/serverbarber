@@ -1,14 +1,19 @@
 import * as Yup from 'yup';
-import coloredLog from '../../lib/ColoredLog';
 import User from '../models/User';
 import File from '../models/File';
 import Category from '../models/Category';
+import CRUD from '../repository/crud';
 
 // import EnrollmentMail from '../jobs/EnrollmentMail';
 // import Queue from '../../lib/Queue';
 
 const emptyUser = { id: null, name: null, email: null, provider: null };
 class UserController {
+	async index(req, res) {
+		const users = await CRUD.findAll(User);
+		return res.json(users);
+	}
+
 	async store(req, res) {
 		const schema = Yup.object().shape({
 			name: Yup.string().required(),
@@ -27,45 +32,26 @@ class UserController {
 				.json(emptyUser);
 		});
 
-		try {
-			const userExists = await User.findOne({
-				where: { email: req.body.email },
-			});
-			if (userExists) {
-				return res
-					.status(400)
-					.set({ error: 'User already exists' })
-					.json(emptyUser);
-			}
-		} catch (error) {
-			const errorMsg = error.stack;
-			console.error(
-				coloredLog(`UserController store search error: ${errorMsg}`, 'error')
-			);
+		const userExists = await CRUD.findOne(User, {
+			where: { email: req.body.email },
+		});
+		if (userExists) {
 			return res
 				.status(400)
-				.set({ error: errorMsg })
+				.set({ error: 'User already exists' })
 				.json(emptyUser);
 		}
 
-		try {
-			const { id, name, email, provider } = await User.create(req.body);
-			return res.json({
-				id,
-				name,
-				email,
-				provider,
-			});
-		} catch (error) {
-			const errorMsg = error.stack;
-			console.error(
-				coloredLog(`UserController store create error: ${errorMsg}`, 'error')
-			);
-			return res
-				.status(400)
-				.set({ error: errorMsg })
-				.json(emptyUser);
-		}
+		const createUser = await CRUD.create(User, req.body);
+		if (!createUser) res.json({ erro: 'User not created' });
+
+		const { id, name, email, provider } = createUser;
+		return res.json({
+			id,
+			name,
+			email,
+			provider,
+		});
 
 		// await Queue.add(EnrollmentMail.key, {
 		// 	id,
@@ -94,10 +80,10 @@ class UserController {
 		}
 		const { email, oldPassword } = req.body;
 
-		const user = await User.findByPk(req.userId);
+		const user = await CRUD.findByPk(User, req.userId);
 
 		if (email && email !== user.email) {
-			const userExists = await User.findOne({
+			const userExists = await CRUD.findOne(User, {
 				where: { email },
 			});
 
@@ -110,25 +96,26 @@ class UserController {
 			return res.status(401).json({ error: 'Password does not match' });
 		}
 
-		await user.update(req.body);
+		const update = await user.update(req.body);
+		if (!update) res.json({ error: 'User not updated' });
 
-		const { id, name, email: NewEmail, avatar, category } = await User.findByPk(
-			req.userId,
-			{
-				include: [
-					{
-						model: File,
-						as: 'avatar',
-						attributes: ['id', 'path', 'url'],
-					},
-					{
-						model: Category,
-						as: 'category',
-						attributes: ['id', 'name'],
-					},
-				],
-			}
-		);
+		const findUser = await CRUD.findByPk(User, req.userId, {
+			include: [
+				{
+					model: File,
+					as: 'avatar',
+					attributes: ['id', 'path', 'url'],
+				},
+				{
+					model: Category,
+					as: 'category',
+					attributes: ['id', 'name'],
+				},
+			],
+		});
+
+		if (!findUser) res.json({ error: 'User not found' });
+		const { id, name, email: NewEmail, avatar, category } = findUser;
 
 		return res.json({
 			id,

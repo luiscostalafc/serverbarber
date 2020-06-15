@@ -27,10 +27,12 @@ class User extends Model {
 
 	static associate(models) {
 		this.belongsTo(models.File, { foreignKey: 'avatar_id', as: 'avatar' });
-		// this.belongsTo(models.Category, {
-		// 	foreignKey: 'category_id',
-		// 	as: 'category',
-		// });
+		this.belongsToMany(models.Category, {
+			through: 'categories_has_users',
+			timestamps: false,
+			foreignKey: 'category_id',
+			onDelete: 'CASCADE',
+		});
 	}
 
 	chekckPassword(password) {

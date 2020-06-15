@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken';
 import User from '../models/User';
 import File from '../models/File';
 import authConfig from '../../config/auth';
+import CRUD from '../repository/crud';
 
 class SessionController {
 	async store(req, res) {
@@ -14,13 +15,16 @@ class SessionController {
 			password: Yup.string().required(),
 		});
 
-		if (!(await schema.isValid(req.body))) {
-			return res.status(400).json({ error: 'validation fails' });
-		}
+		schema.validate(req.body, { abortEarly: false }).catch(err => {
+			return res
+				.status(422)
+				.set({ error: err.errors.join(', ') })
+				.json({});
+		});
 
 		const { email, password } = req.body;
 
-		const user = await User.findOne({
+		const user = await CRUD.findOne(User, {
 			where: { email },
 			include: [
 				{
