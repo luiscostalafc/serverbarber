@@ -5,6 +5,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "yarn sequelize-cli db:migrate && nodemon src/server.js",
+    "migrate:fresh": "yarn sequelize-cli db:migrate:undo:all && yarn sequelize-cli db:migrate && yarn sequelize-cli db:seed:all",
     "queue": "nodemon src/queue.js",
     "dev:debug": "nodemon --inspect src/server.js",
     "build": "sucrase ./src -d ./dist --transforms imports",
