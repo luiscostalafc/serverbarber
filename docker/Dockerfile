@@ -1,9 +1,9 @@
 FROM node:10-alpine
 
-WORKDIR /usr/app
+WORKDIR /www
 COPY package.json yarn.lock ./
 
-RUN yarn 
+RUN yarn
 
 COPY . .
 

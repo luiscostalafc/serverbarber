@@ -16,10 +16,10 @@ const postgresConnect = () => {
 
 	try {
 		connection.authenticate();
-		console.log(coloredLog('[BOOT] Postgres connected'));
+		console.log(coloredLog('🤘🏻[BOOT] Postgres connected'));
 		return connection;
 	} catch (error) {
-		console.error(`[BOOT] Error in connection with Postgres: ${error}`);
+		console.error(`👎🏻[BOOT] Error in connection with Postgres: ${error}`);
 	}
 };
 

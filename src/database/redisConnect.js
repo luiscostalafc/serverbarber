@@ -4,10 +4,10 @@ import coloredLog from '../lib/ColoredLog';
 
 const redisConnect = () => {
 	try {
-		console.log(coloredLog('[BOOT] Redis connected'));
+		console.log(coloredLog('🤩[BOOT] Redis connected'));
 		return redis.createClient(config.port, config.host);
 	} catch (error) {
-		console.error(`[BOOT] Error in connection with Redis: ${err}`);
+		console.error(`😢[BOOT] Error in connection with Redis: ${err}`);
 	}
 };
 

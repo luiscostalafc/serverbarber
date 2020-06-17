@@ -77,17 +77,41 @@ routes.put('/notifications/:id', NotificationController.update);
 // routes.delete('/notifications/:id', NotificationController.delete);
 
 routes.post('/pagseguro/create_session', PagSeguroController.createSession);
-routes.get('/pagseguro/get_payment_methods', PagSeguroController.getPaymentMethods);
+routes.get(
+	'/pagseguro/get_payment_methods',
+	PagSeguroController.getPaymentMethods
+);
 routes.get('/pagseguro/get_card_flag', PagSeguroController.getCardFlag);
 routes.post('/pagseguro/get_card_token', PagSeguroController.getCardToken);
 routes.get('/pagseguro/get_installments', PagSeguroController.getInstallments);
 routes.post('/pagseguro/payment', PagSeguroController.payment);
-routes.get('/pagseguro/get_by_code/:referenceCode', PagSeguroController.getByReferenceCode);
-routes.get('/pagseguro/get_by_interval/:initialDate/:finalDate', PagSeguroController.getByDateInterval);
-routes.get('/pagseguro/get_transaction_details/:transactionCode', PagSeguroController.getTransactionsDetails);
-routes.get('/pagseguro/get_notification_code/:notificationCode', PagSeguroController.getNotificationCode);
-routes.post('/pagseguro/cancel_transaction/:transactionCode', PagSeguroController.cancelTransaction);
-routes.post('/pagseguro/refund_transaction/:transactionCode', PagSeguroController.refundTransaction);
-routes.post('/pagseguro/parcial_refund_transaction/:transactionCode/:refundValue', PagSeguroController.parcialRefunds);
+routes.get(
+	'/pagseguro/get_by_code/:referenceCode',
+	PagSeguroController.getByReferenceCode
+);
+routes.get(
+	'/pagseguro/get_by_interval/:initialDate/:finalDate',
+	PagSeguroController.getByDateInterval
+);
+routes.get(
+	'/pagseguro/get_transaction_details/:transactionCode',
+	PagSeguroController.getTransactionsDetails
+);
+routes.get(
+	'/pagseguro/get_notification_code/:notificationCode',
+	PagSeguroController.getNotificationCode
+);
+routes.post(
+	'/pagseguro/cancel_transaction/:transactionCode',
+	PagSeguroController.cancelTransaction
+);
+routes.post(
+	'/pagseguro/refund_transaction/:transactionCode',
+	PagSeguroController.refundTransaction
+);
+routes.post(
+	'/pagseguro/parcial_refund_transaction/:transactionCode/:refundValue',
+	PagSeguroController.parcialRefunds
+);
 
 export default routes;
