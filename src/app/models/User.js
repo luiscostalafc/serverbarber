@@ -33,6 +33,18 @@ class User extends Model {
 			foreignKey: 'category_id',
 			onDelete: 'CASCADE',
 		});
+		this.belongsToMany(models.Phone, {
+			through: 'users_has_phones',
+			timestamps: false,
+			foreignKey: 'phone_id',
+			onDelete: 'CASCADE',
+		});
+		this.belongsToMany(models.Card, {
+			through: 'cards_has_users',
+			timestamps: false,
+			foreignKey: 'card_id',
+			onDelete: 'CASCADE',
+		});
 	}
 
 	checkPassword(password) {

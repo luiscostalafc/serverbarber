@@ -2,16 +2,15 @@ import postgresConnect from './postgresConnect';
 import redisConnect from './redisConnect';
 import mongoConnect from './mongoConnect';
 
-// User
-import User from '../app/models/User';
+import Appointment from '../app/models/Appointment';
+import Card from '../app/models/Card';
 import Category from '../app/models/Category';
 import File from '../app/models/File';
-import Appointment from '../app/models/Appointment';
-
-// Map
+import Phone from '../app/models/Phone';
 import Point from '../app/models/Point';
+import User from '../app/models/User';
 
-const models = [User, File, Appointment, Category, Point];
+const models = [Appointment, Card, Category, File, Phone, Point, User];
 
 class Database {
 	constructor() {

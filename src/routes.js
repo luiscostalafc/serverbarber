@@ -8,6 +8,8 @@ import SessionController from './app/controllers/SessionController';
 import FileController from './app/controllers/FileController';
 import ProviderController from './app/controllers/ProviderController';
 import CategoryController from './app/controllers/CategoryController';
+import CardController from './app/controllers/CardController';
+import PhoneController from './app/controllers/PhoneController';
 import AppointmentController from './app/controllers/AppointmentController';
 import ScheduleController from './app/controllers/ScheduleController';
 import NotificationController from './app/controllers/NotificationController';
@@ -40,6 +42,20 @@ routes.post('/categories/:categoryId/user/:userId', CategoryController.sync);
 routes.get('/categories/:gender', CategoryController.gender);
 routes.put('/categories/:id', CategoryController.update);
 routes.delete('/categories/:id', CategoryController.delete);
+
+routes.get('/cards', CardController.index);
+routes.post('/cards', CardController.store);
+routes.post('/cards/:cardId/user/:userId', CardController.sync);
+routes.get('/cards/:id', CardController.show);
+routes.put('/cards/:id', CardController.update);
+routes.delete('/cards/:id', CardController.delete);
+
+routes.get('/phone', PhoneController.index);
+routes.post('/phone', PhoneController.store);
+routes.post('/phone/:phoneId/user/:userId', PhoneController.sync);
+routes.get('/phone/:id', PhoneController.show);
+routes.put('/phone/:id', PhoneController.update);
+routes.delete('/phone/:id', PhoneController.delete);
 
 routes.get('/points', PointController.index);
 routes.post('/points', PointController.store);
