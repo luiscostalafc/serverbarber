@@ -35,7 +35,7 @@ class User extends Model {
 		});
 	}
 
-	chekckPassword(password) {
+	checkPassword(password) {
 		return bcrypt.compare(password, this.password_hash);
 	}
 }
