@@ -6,7 +6,7 @@ const TOKEN_PAGSEGURO = process.env.TOKEN_PAGSEGURO || null;
 
 class Cancels {
 
-  async cancel (transactionCode) {
+  async cancelTransaction (transactionCode) {
     const functionName = 'cancel';
     if (!EMAIL_PAGSEGURO) return validations.mountReturn(`EMAIL_PAGSEGURO not defined in .env called in ${functionName}`);
     if (!TOKEN_PAGSEGURO) return validations.mountReturn(`TOKEN_PAGSEGURO not defined in .env called in ${functionName}`);
@@ -24,7 +24,7 @@ class Cancels {
       .catch(error => { return validations.mountReturn(error) });
   }
 
-  async refunds (transactionCode) {
+  async refundTransaction (transactionCode) {
     const functionName = 'refunds';
     if (!EMAIL_PAGSEGURO) return validations.mountReturn(`EMAIL_PAGSEGURO not defined in .env called in ${functionName}`);
     if (!TOKEN_PAGSEGURO) return validations.mountReturn(`TOKEN_PAGSEGURO not defined in .env called in ${functionName}`);

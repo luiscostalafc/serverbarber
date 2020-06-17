@@ -6,18 +6,18 @@ const TOKEN_PAGSEGURO = process.env.TOKEN_PAGSEGURO || null;
 
 class Consult {
 
-  async referenceCode (reference) {
+  async getByReferenceCode (referenceCode) {
     const functionName = 'referenceCode';
     if (!EMAIL_PAGSEGURO) return validations.mountReturn(`EMAIL_PAGSEGURO not defined in .env called in ${functionName}`);
     if (!TOKEN_PAGSEGURO) return validations.mountReturn(`TOKEN_PAGSEGURO not defined in .env called in ${functionName}`);
-    if (!reference) return validations.mountReturn(validations.errorMsg(errorMsg (functionName, 'reference')));
+    if (!referenceCode) return validations.mountReturn(validations.errorMsg(errorMsg (functionName, 'referenceCode')));
 
     const requestOptions = {
       method: 'GET',
       redirect: 'follow'
     };
     
-    const URL = `${URLBASE}/v2/transactions?email=${EMAIL_PAGSEGURO}&token=${TOKEN_PAGSEGURO}&reference=${reference}`;
+    const URL = `${URLBASE}/v2/transactions?email=${EMAIL_PAGSEGURO}&token=${TOKEN_PAGSEGURO}&reference=${referenceCode}`;
     
     fetch(URL, requestOptions)
       .then(response => { return validations.mountReturn(`success ${functionName}`, 'success', response.json()) })
@@ -43,7 +43,7 @@ class Consult {
       .catch(error => console.log('error', error));
   }
 
-  async transactionsDetails (transactionCode) {
+  async getTransactionsDetails (transactionCode) {
     const functionName = 'transactionsDetails';
     if (!EMAIL_PAGSEGURO) return validations.mountReturn(`EMAIL_PAGSEGURO not defined in .env called in ${functionName}`);
     if (!TOKEN_PAGSEGURO) return validations.mountReturn(`TOKEN_PAGSEGURO not defined in .env called in ${functionName}`);
@@ -60,7 +60,7 @@ class Consult {
       .catch(error => { return validations.mountReturn(error) });
   }
 
-  async notificationCode (notificationCode) {
+  async getNotificationCode (notificationCode) {
     const functionName = 'notificationCode';
     if (!EMAIL_PAGSEGURO) return validations.mountReturn(`EMAIL_PAGSEGURO not defined in .env called in ${functionName}`);
     if (!TOKEN_PAGSEGURO) return validations.mountReturn(`TOKEN_PAGSEGURO not defined in .env called in ${functionName}`);
