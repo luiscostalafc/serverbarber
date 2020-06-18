@@ -38,6 +38,22 @@ class ScheduleController {
 
 		return res.json(Appointments);
 	}
+
+	async store(req, res) {
+		return res.status(501).json({ error: 'Not implemented' });
+	}
+
+	async show(req, res) {
+		return res.status(501).json({ error: 'Not implemented' });
+	}
+
+	async update(req, res) {
+		return res.status(501).json({ error: 'Not implemented' });
+	}
+
+	async delete(req, res) {
+		return res.status(501).json({ error: 'Not implemented' });
+	}
 }
 
 export default new ScheduleController();

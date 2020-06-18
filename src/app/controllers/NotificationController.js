@@ -25,6 +25,14 @@ class NotificationController {
 		return res.json(notifications);
 	}
 
+	async store(req, res) {
+		return res.status(501).json({ error: 'Not implemented' });
+	}
+
+	async show(req, res) {
+		return res.status(501).json({ error: 'Not implemented' });
+	}
+
 	async update(req, res) {
 		const notification = await CRUD.findByIdAndUpdate(
 			Notification,
@@ -34,6 +42,10 @@ class NotificationController {
 		);
 
 		return res.json(notification);
+	}
+
+	async delete(req, res) {
+		return res.status(501).json({ error: 'Not implemented' });
 	}
 }
 
