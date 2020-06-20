@@ -60,6 +60,10 @@ class UserController {
 		// });
 	}
 
+	async show(req, res) {
+		return res.status(501).json({ error: 'Not implemented' });
+	}
+
 	async update(req, res) {
 		const schema = Yup.object().shape({
 			name: Yup.string(),
@@ -124,6 +128,10 @@ class UserController {
 			avatar,
 			category,
 		});
+	}
+
+	async delete(req, res) {
+		return res.status(501).json({ error: 'Not implemented' });
 	}
 }
 

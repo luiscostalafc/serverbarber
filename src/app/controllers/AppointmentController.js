@@ -99,6 +99,14 @@ class AppointmentController {
 		return res.json(appointment);
 	}
 
+	async show(req, res) {
+		return res.status(501).json({ error: 'Not implemented' });
+	}
+
+	async update(req, res) {
+		return res.status(501).json({ error: 'Not implemented' });
+	}
+	
 	async createNotification(req, hourStart, provider_id) {
 		const user = await CRUD.findByPk(User, req.userId);
 		const formatedDate = format(

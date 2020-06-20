@@ -1,17 +1,43 @@
 class PagSeguroController {
-	async createSession(req, res) {}
-	async getPaymentMethods(req, res) {}
-	async getCardFlag(req, res) {}
-	async getCardToken(req, res) {}
-	async getInstallments(req, res) {}
-	async payment(req, res) {}
-	async getByReferenceCode(req, res) {}
-	async getByDateInterval(req, res) {}
-	async getTransactionsDetails(req, res) {}
-	async getNotificationCode(req, res) {}
-	async cancelTransaction(req, res) {}
-	async refundTransaction(req, res) {}
-	async parcialRefunds(req, res) {}
+	async createSession(req, res) {
+		return res.status(501).json({ error: 'Not implemented' });
+	}
+	async getPaymentMethods(req, res) {
+		return res.status(501).json({ error: 'Not implemented' });
+	}
+	async getCardFlag(req, res) {
+		return res.status(501).json({ error: 'Not implemented' });
+	}
+	async getCardToken(req, res) {
+		return res.status(501).json({ error: 'Not implemented' });
+	}
+	async getInstallments(req, res) {
+		return res.status(501).json({ error: 'Not implemented' });
+	}
+	async payment(req, res) {
+		return res.status(501).json({ error: 'Not implemented' });
+	}
+	async getByReferenceCode(req, res) {
+		return res.status(501).json({ error: 'Not implemented' });
+	}
+	async getByDateInterval(req, res) {
+		return res.status(501).json({ error: 'Not implemented' });
+	}
+	async getTransactionsDetails(req, res) {
+		return res.status(501).json({ error: 'Not implemented' });
+	}
+	async getNotificationCode(req, res) {
+		return res.status(501).json({ error: 'Not implemented' });
+	}
+	async cancelTransaction(req, res) {
+		return res.status(501).json({ error: 'Not implemented' });
+	}
+	async refundTransaction(req, res) {
+		return res.status(501).json({ error: 'Not implemented' });
+	}
+	async parcialRefunds(req, res) {
+		return res.status(501).json({ error: 'Not implemented' });
+	}
 }
 
 export default new PagSeguroController();
