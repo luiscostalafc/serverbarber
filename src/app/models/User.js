@@ -31,6 +31,7 @@ class User extends Model {
 			through: 'categories_has_users',
 			timestamps: false,
 			foreignKey: 'category_id',
+			as: 'category',
 			onDelete: 'CASCADE',
 		});
 		this.belongsToMany(models.Phone, {
