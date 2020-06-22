@@ -39,6 +39,10 @@ module.exports = {
 				type: Sequelize.STRING,
 				allowNull: false,
 			},
+			holder_birth_date: {
+				type: Sequelize.DATE,
+				allowNull: false,
+			},
 			created_at: {
 				type: Sequelize.DATE,
 				allowNull: false,

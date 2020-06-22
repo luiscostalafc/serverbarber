@@ -64,17 +64,18 @@ class CRUD {
 		}
 	}
 
-	async findByIdAndUpdate(Model, id, read, newParam) {
-		const qread = read || {};
-		const qnew = newParam || {};
-
+	async findByIdAndDestroy(Model, id) {
 		try {
-			const findByIdAndUpdate = await Model.findByIdAndUpdate(id, qread, qnew);
-			return findByIdAndUpdate;
+			const findByIdAndDestroy = await Model.destroy({
+				where: {
+					id
+				}
+			});
+			return findByIdAndDestroy;
 		} catch (error) {
 			const errorMsg = error.stack;
 			// eslint-disable-next-line no-console
-			console.error(coloredLog(`findByIdAndUpdate: ${errorMsg}`, 'error'));
+			console.error(coloredLog(`findByIdAndDestroy: ${errorMsg}`, 'error'));
 			return [];
 		}
 	}

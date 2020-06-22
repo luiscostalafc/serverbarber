@@ -4,6 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
+    "up": "docker-compose up -d",
     "dev": "yarn sequelize-cli db:migrate && nodemon src/server.js",
     "migrate:fresh": "yarn sequelize-cli db:migrate:undo:all && yarn sequelize-cli db:migrate && yarn sequelize-cli db:seed:all",
     "queue": "nodemon src/queue.js",
@@ -21,6 +22,7 @@
     "express": "^4.17.1",
     "express-async-errors": "^3.1.1",
     "express-handlebars": "^3.1.0",
+    "faker-br": "^0.2.7",
     "intl": "^1.2.5",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.7.6",
