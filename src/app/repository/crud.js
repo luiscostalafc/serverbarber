@@ -52,26 +52,68 @@ class CRUD {
 		}
 	}
 
-	async create(Model, value) {
+	async create(Model, value, mongo = false) {
 		try {
 			const create = await Model.create(value);
 			return create;
 		} catch (error) {
-			const errorMsg = error.stack;
+			const errorMsg = mongo ? error : error.stack;
 			// eslint-disable-next-line no-console
 			console.error(coloredLog(`create: ${errorMsg}`, 'error'));
 			return [];
 		}
 	}
 
-	async findByIdAndDestroy(Model, id) {
+	async findByIdAndUpdate(Model, id, data) {
 		try {
-			const findByIdAndDestroy = await Model.destroy({
-				where: {
-					id
-				}
+			const findByIdAndUpdate = await Model.update(data, {
+				returning: true,
+				plain: true,
+				where: { id },
 			});
+			return findByIdAndUpdate;
+		} catch (error) {
+			const errorMsg = error.stack;
+			// eslint-disable-next-line no-console
+			console.error(coloredLog(`findByIdAndUpdate: ${errorMsg}`, 'error'));
+			return [];
+		}
+	}
+
+	async findByIdAndUpdateMongo(Model, id, data) {
+		try {
+			const findByIdAndUpdateMongo = await Model.findByIdAndUpdate(id, data, {
+				new: true,
+			});
+			return findByIdAndUpdateMongo;
+		} catch (error) {
+			const errorMsg = error.stack;
+			// eslint-disable-next-line no-console
+			console.error(coloredLog(`findByIdAndUpdateMongo: ${errorMsg}`, 'error'));
+			return [];
+		}
+	}
+
+	async findByIdAndDestroy(Model, id) {
+		const find = await this.findByPk(Model, id);
+		const findByIdAndDestroy = !find ? false : find.dataValues;
+
+		if (!findByIdAndDestroy) return {};
+		try {
+			find.destroy();
 			return findByIdAndDestroy;
+		} catch (error) {
+			const errorMsg = error.stack;
+			// eslint-disable-next-line no-console
+			console.error(coloredLog(`findByIdAndDestroy: ${errorMsg}`, 'error'));
+			return [];
+		}
+	}
+
+	async findByIdAndRemove(Model, id) {
+		try {
+			const findByIdAndRemove = Model.findByIdAndRemove(id);
+			return findByIdAndRemove;
 		} catch (error) {
 			const errorMsg = error.stack;
 			// eslint-disable-next-line no-console

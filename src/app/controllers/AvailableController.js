@@ -1,6 +1,7 @@
+import * as Yup from 'yup';
 import {
-	startOfDay,
-	endOfDay,
+	// startOfDay,
+	// endOfDay,
 	setHours,
 	setMinutes,
 	setSeconds,
@@ -13,20 +14,29 @@ import CRUD from '../repository/crud';
 
 class AvailableController {
 	async index(req, res) {
-		const { date } = req.query;
+		const schema = Yup.object().shape({
+			provider_id: Yup.number().required(),
+			date: Yup.date().required(),
+		});
 
-		if (!date) {
-			return res.status(400).json({ error: 'Invalid date' });
-		}
+		schema.validate(req.body, { abortEarly: false }).catch(err => {
+			return res
+				.status(422)
+				.set({ error: err.errors.join(', ') })
+				.json({});
+		});
 
-		const searchDate = Number(date);
+		const { provider_id, date } = req.body;
+
+		const searchDate = new Date(date);
+		const { startDay, endDay } = searchDate.getDate();
 
 		const appointments = await CRUD.findAll(Appointment, {
 			where: {
-				provider_id: req.params.providerId,
+				provider_id,
 				canceled_at: null,
 				date: {
-					[Op.between]: [startOfDay(searchDate), endOfDay(searchDate)],
+					[Op.between]: [startDay, endDay],
 				},
 			},
 		});

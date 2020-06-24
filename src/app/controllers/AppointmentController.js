@@ -1,11 +1,10 @@
 import * as Yup from 'yup';
-import { startOfHour, parseISO, isBefore, format, subHours } from 'date-fns';
-import pt from 'date-fns/locale/pt';
+import { startOfHour, parseISO, isBefore, subHours } from 'date-fns';
 import CRUD from '../repository/crud';
 import User from '../models/User';
 import File from '../models/File';
 import Appointment from '../models/Appointment';
-import Notification from '../schemas/Notification';
+import NotificationController from './NotificationController';
 
 import CancellationMail from '../jobs/CancellationMail';
 import Queue from '../../lib/Queue';
@@ -15,7 +14,7 @@ class AppointmentController {
 		const { page = 1 } = req.query;
 
 		const appointments = await CRUD.findAll(Appointment, {
-			where: { user_id: req.userId, canceled_at: null },
+			where: { canceled_at: null },
 			order: ['date'],
 			attributes: ['id', 'date', 'past', 'cancelable'],
 			limit: 20,
@@ -90,42 +89,43 @@ class AppointmentController {
 				.json({ error: 'Appointment date is not available' });
 		}
 
-		const appointment = await CRUD.create(Appointment, {
+		const appointmentData = {
 			user_id: req.userId,
 			provider_id,
 			date: hourStart,
+		};
+
+		const appointment = await CRUD.create(Appointment, appointmentData);
+
+		const notification = await NotificationController.create({
+			provider_id,
+			date,
 		});
-		this.createNotification(req, hourStart, provider_id);
-		return res.json(appointment);
+
+		return res.json({ appointment, notification });
 	}
 
 	async show(req, res) {
-		return res.status(501).json({ error: 'Not implemented' });
+		const reg = await CRUD.findByPk(Appointment, req.params.id, {
+			include: [
+				{
+					model: User,
+					as: 'provider',
+					attributes: ['name', 'email'],
+				},
+				{
+					model: User,
+					as: 'user',
+					attributes: ['name'],
+				},
+			],
+		});
+
+		return res.json(reg);
 	}
 
 	async update(req, res) {
 		return res.status(501).json({ error: 'Not implemented' });
-	}
-	
-	async createNotification(req, hourStart, provider_id) {
-		const user = await CRUD.findByPk(User, req.userId);
-		const formatedDate = format(
-			hourStart,
-			"'dia' dd 'de' MMMM', às ' H:mm'h'",
-			{ locale: pt }
-		);
-
-		const notification = await CRUD.create(Notification, {
-			content: `Novo agendamento de ${user.name}
-			para ${formatedDate}`,
-			user: provider_id,
-		});
-
-		const ownerSocket = req.connectedUsers[provider_id];
-
-		if (ownerSocket) {
-			req.io.to(ownerSocket).emit('notification', notification);
-		}
 	}
 
 	async delete(req, res) {

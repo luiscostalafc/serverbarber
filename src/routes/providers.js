@@ -4,6 +4,6 @@ import AvailableController from '../app/controllers/AvailableController';
 const router = require('express').Router();
 
 router.get('/providers', ProviderController.index);
-router.get('/providers/:providerId/available', AvailableController.index);
+router.post('/providers/available', AvailableController.index);
 
 module.exports = router;

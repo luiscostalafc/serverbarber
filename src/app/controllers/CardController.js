@@ -18,7 +18,6 @@ class CardController {
 
 	async store(req, res) {
 		const schema = Yup.object().shape({
-			name: Yup.string().required(),
 			card_number: Yup.string().required(),
 			brand: Yup.string().required(),
 			cvv: Yup.string().required(),
@@ -31,6 +30,7 @@ class CardController {
 			card_token: Yup.string().required(),
 			holder_name: Yup.string().required(),
 			holder_cpf: Yup.string().required(),
+			holder_birth_date: Yup.date().required(),
 		});
 
 		schema.validate(req.body, { abortEarly: false }).catch(err => {
@@ -40,30 +40,35 @@ class CardController {
 				.json({});
 		});
 
-		const CardExists = await CRUD.findOne(Card, {
-			where: { name: req.body.name },
+		const cardExists = await CRUD.findOne(Card, {
+			where: { card_number: req.body.card_number },
 		});
-		if (CardExists) {
+		if (cardExists) {
 			return res
 				.status(400)
 				.set({ error: 'Card already exists' })
 				.json({});
 		}
 
-		const categories = await CRUD.create(Card, req.body);
-		return res.json(categories);
+		const card = await CRUD.create(Card, req.body);
+		return res.json(card);
 	}
 
 	async show(req, res) {
-		const Card = await CRUD.findAll(Card, {
-			where: { id: req.params.show },
+		const reg = await CRUD.findByPk(Card, req.params.id, {
+			include: [
+				{
+					model: User,
+					attributes: ['name', 'email'],
+				},
+			],
 		});
-		return res.json(Card);
+
+		return res.json(reg);
 	}
 
 	async update(req, res) {
 		const schema = Yup.object().shape({
-			name: Yup.string().required(),
 			card_number: Yup.string().required(),
 			brand: Yup.string().required(),
 			cvv: Yup.string().required(),
@@ -76,6 +81,7 @@ class CardController {
 			card_token: Yup.string().required(),
 			holder_name: Yup.string().required(),
 			holder_cpf: Yup.string().required(),
+			holder_birth_date: Yup.date().required(),
 		});
 
 		schema.validate(req.body, { abortEarly: false }).catch(err => {
@@ -85,42 +91,27 @@ class CardController {
 				.json({});
 		});
 
-		const CardExists = await CRUD.findOne(Card, {
-			where: { name: req.body.name },
-		});
-		if (CardExists) {
-			return res
-				.status(400)
-				.set({ error: 'Card already exists' })
-				.json({});
-		}
-
-		const Card = await CRUD.findByIdAndUpdate(
-			Card,
-			req.params.id,
-			{ read: true },
-			{ new: true }
-		);
-		return res.json(Card);
+		const card = await CRUD.findByIdAndUpdate(Card, req.params.id, req.body);
+		return res.json(card);
 	}
 
 	async delete(req, res) {
-		const Card = await CRUD.findByPk(Card, req.params.id);
-		await Card.destroy();
-		return res.json(Card);
+		const card = await CRUD.findByIdAndDestroy(Card, req.params.id);
+		return res.json(card);
 	}
 
 	async sync(req, res) {
 		const { CardId } = req.params;
 		const { userId } = req.params;
-		const Card = await CRUD.findByPk(Card, CardId);
-		if (!Card) return res.json({ error: 'Card not found' });
+		const card = await CRUD.findByPk(Card, CardId);
+		if (!card) return res.json({ error: 'Card not found' });
 
 		const user = await CRUD.findByPk(User, userId);
 		if (!user) return res.json({ error: 'User not found' });
 
 		try {
 			const syncUser = await Card.addUser(user);
+			// eslint-disable-next-line no-console
 			console.log(syncUser);
 			return res.json(syncUser);
 		} catch (error) {

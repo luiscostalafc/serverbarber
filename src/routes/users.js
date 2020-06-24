@@ -10,4 +10,4 @@ router.get('/users/:id', UserController.show);
 router.put('/users/:id', UserController.update);
 router.delete('/users/:id', UserController.delete);
 
-module.exports = router; 
+module.exports = router;

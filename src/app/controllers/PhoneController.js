@@ -2,6 +2,7 @@ import * as Yup from 'yup';
 import Phone from '../models/Phone';
 import User from '../models/User';
 import CRUD from '../repository/crud';
+import SYNC from '../repository/sync';
 
 class PhoneController {
 	async index(req, res) {
@@ -31,7 +32,7 @@ class PhoneController {
 		});
 
 		const phoneExists = await CRUD.findOne(Phone, {
-			where: { name: req.body.name },
+			where: { number: req.body.number },
 		});
 		if (phoneExists) {
 			return res
@@ -45,8 +46,8 @@ class PhoneController {
 	}
 
 	async show(req, res) {
-		const Phone = await CRUD.findAll(Phone, {
-			where: { gender: req.params.id },
+		const phone = await CRUD.findOne(Phone, {
+			where: { id: req.params.id },
 			include: [
 				{
 					model: User,
@@ -54,7 +55,7 @@ class PhoneController {
 				},
 			],
 		});
-		return res.json(Phone);
+		return res.json(phone);
 	}
 
 	async update(req, res) {
@@ -71,50 +72,19 @@ class PhoneController {
 				.json({});
 		});
 
-		const phoneExists = await CRUD.findOne(Phone, {
-			where: { name: req.body.name },
-		});
-		if (phoneExists) {
-			return res
-				.status(400)
-				.set({ error: 'Phone already exists' })
-				.json({});
-		}
-
-		const Phone = await CRUD.findByIdAndUpdate(
-			Phone,
-			req.params.id,
-			{ read: true },
-			{ new: true }
-		);
-		return res.json(Phone);
+		const phone = await CRUD.findByIdAndUpdate(Phone, req.params.id, req.body);
+		return res.json(phone);
 	}
 
 	async delete(req, res) {
-		const Phone = await CRUD.findByPk(Phone, req.params.id);
-		await Phone.destroy();
-		return res.json(Phone);
+		const reg = await CRUD.findByIdAndDestroy(Phone, req.params.id);
+		return res.json(reg);
 	}
 
 	async sync(req, res) {
-		const { PhoneId } = req.params;
-		const { userId } = req.params;
-		const Phone = await CRUD.findByPk(Phone, PhoneId);
-		if (!Phone) return res.json({ error: 'Phone not found' });
-
-		const user = await CRUD.findByPk(User, userId);
-		if (!user) return res.json({ error: 'User not found' });
-
-		try {
-			const syncUser = await Phone.addUser(user);
-			console.log(syncUser);
-			return res.json(syncUser);
-		} catch (error) {
-			const errorMsg = error.stack;
-			// eslint-disable-next-line no-console
-			console.error(`sync error: ${errorMsg}`);
-			return res.json({});
-		}
+		const { phoneId, userId } = req.params;
+		const sync = await SYNC.phoneAddUser(phoneId, userId);
+		return res.json(sync);
 	}
 }
 

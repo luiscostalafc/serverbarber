@@ -13,7 +13,7 @@ import CRUD from '../repository/crud';
 // import EnrollmentMail from '../jobs/EnrollmentMail';
 // import Queue from '../../lib/Queue';
 
-const emptyRegistry = { };
+const emptyRegistry = {};
 class UserController {
 	async index(req, res) {
 		const users = await CRUD.findAll(User);
@@ -21,14 +21,14 @@ class UserController {
 	}
 
 	async providers(req, res) {
-		const users = await CRUD.findAll(User,  {
+		const users = await CRUD.findAll(User, {
 			where: { provider: true },
 		});
 		return res.json(users);
 	}
 
 	async notProviders(req, res) {
-		const users = await CRUD.findAll(User,  {
+		const users = await CRUD.findAll(User, {
 			where: { provider: false },
 		});
 		return res.json(users);
@@ -106,12 +106,18 @@ class UserController {
 				{
 					model: Phone,
 					as: 'phones',
-					attributes: ['id','type', 'area_code', 'number'],
+					attributes: ['id', 'type', 'area_code', 'number'],
 				},
 				{
 					model: Card,
 					as: 'cards',
-					attributes: ['id','card_token', 'holder_name', 'holder_cpf', 'holder_birth_date'],
+					attributes: [
+						'id',
+						'card_token',
+						'holder_name',
+						'holder_cpf',
+						'holder_birth_date',
+					],
 				},
 			],
 		});

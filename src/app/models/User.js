@@ -28,13 +28,15 @@ class User extends Model {
 	static associate(models) {
 		this.belongsTo(models.File, { foreignKey: 'avatar_id', as: 'avatar' });
 		this.hasMany(models.Point, { foreignKey: 'user_id', as: 'points' });
-		this.hasMany(models.Appointment, { foreignKey: 'user_id', as: 'appointments' });
+		this.hasMany(models.Appointment, {
+			foreignKey: 'user_id',
+			as: 'appointments',
+		});
 		this.belongsToMany(models.Category, {
 			through: 'categories_has_users',
 			as: 'categories',
 			timestamps: false,
 			foreignKey: 'category_id',
-			as: 'category',
 			onDelete: 'CASCADE',
 		});
 		this.belongsToMany(models.Phone, {

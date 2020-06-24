@@ -12,6 +12,7 @@ class Card extends Model {
 				card_token: Sequelize.STRING,
 				holder_name: Sequelize.STRING,
 				holder_cpf: Sequelize.STRING,
+				holder_birth_date: Sequelize.DATE,
 			},
 			{
 				sequelize,

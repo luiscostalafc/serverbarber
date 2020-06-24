@@ -2,6 +2,7 @@ import * as Yup from 'yup';
 import Category from '../models/Category';
 import User from '../models/User';
 import CRUD from '../repository/crud';
+import SYNC from '../repository/sync';
 
 class CategoryController {
 	async index(req, res) {
@@ -95,22 +96,8 @@ class CategoryController {
 	async sync(req, res) {
 		const { categoryId } = req.params;
 		const { userId } = req.params;
-		const category = await CRUD.findByPk(Category, categoryId);
-		if (!category) return res.json({ error: 'Category not found' });
-
-		const user = await CRUD.findByPk(User, userId);
-		if (!user) return res.json({ error: 'User not found' });
-
-		try {
-			const syncUser = await category.addUser(user);
-			console.log(syncUser);
-			return res.json(syncUser);
-		} catch (error) {
-			const errorMsg = error.stack;
-			// eslint-disable-next-line no-console
-			console.error(`sync error: ${errorMsg}`);
-			return res.json({});
-		}
+		const sync = await SYNC.categoryAddUser(categoryId, userId);
+		return res.json(sync);
 	}
 }
 
