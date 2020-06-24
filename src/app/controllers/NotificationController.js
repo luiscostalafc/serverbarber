@@ -97,7 +97,12 @@ class NotificationController {
 	}
 
 	async show(req, res) {
-		return res.status(501).json({ error: 'Not implemented' });
+		const notification = await CRUD.findById(Notification, req.params.id);
+		if (notification && notification.user) {
+			const user = await CRUD.findByPk(User, notification.user);
+			return res.json({ notification, user });
+		}
+		return res.json(notification);
 	}
 
 	async update(req, res) {

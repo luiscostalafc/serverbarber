@@ -22,7 +22,7 @@ class SessionController {
 				.json({});
 		});
 
-		const { email, password } = req.body;
+		const { email } = req.body;
 
 		const user = await CRUD.findOne(User, {
 			where: { email },
