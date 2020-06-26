@@ -38,6 +38,18 @@ class CRUD {
 		}
 	}
 
+	async findById(Model, id) {
+		try {
+			const findByPk = await Model.findById(id);
+			return findByPk;
+		} catch (error) {
+			const errorMsg = error;
+			// eslint-disable-next-line no-console
+			console.error(coloredLog(`FindById: ${errorMsg}`, 'error'));
+			return [];
+		}
+	}
+
 	async findAndSort(Model, findQuery, sort, limit = 20) {
 		try {
 			const find = await Model.find(findQuery)

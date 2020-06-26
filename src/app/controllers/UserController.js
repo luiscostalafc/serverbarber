@@ -129,7 +129,7 @@ class UserController {
 		const schema = Yup.object().shape({
 			name: Yup.string(),
 			email: Yup.string().email(),
-			oldPassword: Yup.string().min(6),
+			oldPassword: Yup.string().min(6).required(),
 			password: Yup.string()
 				.min(6)
 				.when('oldPassword', (oldPassword, field) =>
@@ -148,6 +148,7 @@ class UserController {
 		});
 
 		const { oldPassword } = req.body;
+
 		const user = await CRUD.findByPk(User, req.params.id);
 
 		if (oldPassword && !(await user.checkPassword(oldPassword))) {

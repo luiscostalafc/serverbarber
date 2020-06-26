@@ -1,18 +1,18 @@
 version: "3"
 
 services:
-  app:
-    container_name: jackbarber_app
-    build: ./docker
-    ports:
-      - "3000:3000"
-    command: yarn start
-    volumes:
-      - .:/usr/src
-    links:
-      - postgres
-      - mongo
-      - redis
+  # app:
+  #   container_name: jackbarber_app
+  #   build: ./docker
+  #   ports:
+  #     - "3000:3000"
+  #   command: yarn start
+  #   volumes:
+  #     - .:/usr/src
+  #   links:
+  #     - postgres
+  #     - mongo
+  #     - redis
 
   postgres:
     container_name: jackbarber_postgres
