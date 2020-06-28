@@ -13,7 +13,7 @@ routes.use(require('./routes/cards'));
 routes.use(require('./routes/categories'));
 routes.use(require('./routes/files'));
 routes.use(require('./routes/notifications'));
-routes.use(require('./routes/pagseguro'));
+routes.use(require('./routes/mercardopago'));
 routes.use(require('./routes/phones'));
 routes.use(require('./routes/points'));
 routes.use(require('./routes/providers'));
