@@ -19,7 +19,6 @@ class PhoneController {
 
 	async store(req, res) {
 		const schema = Yup.object().shape({
-			type: Yup.string().required(),
 			area_code: Yup.string().required(),
 			number: Yup.string().required(),
 		});
@@ -60,7 +59,6 @@ class PhoneController {
 
 	async update(req, res) {
 		const schema = Yup.object().shape({
-			type: Yup.string().required(),
 			area_code: Yup.string().required(),
 			number: Yup.string().required(),
 		});

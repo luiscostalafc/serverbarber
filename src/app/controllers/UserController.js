@@ -9,6 +9,7 @@ import Category from '../models/Category';
 import Card from '../models/Card';
 
 import CRUD from '../repository/crud';
+import SYNC from '../repository/sync';
 
 // import EnrollmentMail from '../jobs/EnrollmentMail';
 // import Queue from '../../lib/Queue';
@@ -43,6 +44,9 @@ class UserController {
 			password: Yup.string()
 				.required()
 				.min(6),
+			phone: Yup.string()
+				.required()
+				.min(6),
 		});
 
 		schema.validate(req.body, { abortEarly: false }).catch(err => {
@@ -62,15 +66,37 @@ class UserController {
 				.json(emptyRegistry);
 		}
 
+		const userData = {
+			name: req.body.email,
+			email: req.body.email,
+			password: req.body.password,
+			provider: !!req.body.provider,
+		};
+
 		const createUser = await CRUD.create(User, req.body);
 		if (!createUser) res.json({ erro: 'User not created' });
 
+		const { phone } = req.body;
+		const phone_parts = phone.split(' ');
+
+		const area_code = phone_parts[0].replace(/[()]/g, '');
+		const number = phone_parts[1].replace(/[()]/g, '');
+
+		const createPhone = await CRUD.create(Phone, { area_code, number });
+		if (!createPhone) res.json({ erro: 'Phone not created' });
+
+		const sync = await SYNC.phoneAddUser(createPhone.id, createUser.id);
+		if (!sync) res.json({ erro: 'Phone and User not sync' });
+
 		const { id, name, email, provider } = createUser;
+
 		return res.json({
 			id,
 			name,
 			email,
 			provider,
+			phone: createPhone,
+			sync,
 		});
 
 		// await Queue.add(EnrollmentMail.key, {

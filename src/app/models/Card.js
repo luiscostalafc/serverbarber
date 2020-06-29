@@ -26,7 +26,7 @@ class Card extends Model {
 		this.belongsToMany(models.User, {
 			through: 'cards_has_users',
 			timestamps: false,
-			foreignKey: 'user_id',
+			foreignKey: 'card_id',
 			onDelete: 'CASCADE',
 		});
 	}

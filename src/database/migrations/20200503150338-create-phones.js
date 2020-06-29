@@ -7,10 +7,6 @@ module.exports = {
 				autoIncrement: true,
 				primaryKey: true,
 			},
-			type: {
-				type: Sequelize.STRING,
-				allowNull: false,
-			},
 			area_code: {
 				type: Sequelize.STRING,
 				allowNull: false,

@@ -43,14 +43,14 @@ class User extends Model {
 			through: 'users_has_phones',
 			as: 'phones',
 			timestamps: false,
-			foreignKey: 'phone_id',
+			foreignKey: 'user_id',
 			onDelete: 'CASCADE',
 		});
 		this.belongsToMany(models.Card, {
 			through: 'cards_has_users',
 			as: 'cards',
 			timestamps: false,
-			foreignKey: 'card_id',
+			foreignKey: 'user_id',
 			onDelete: 'CASCADE',
 		});
 	}

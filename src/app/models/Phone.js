@@ -4,7 +4,6 @@ class Phone extends Model {
 	static init(sequelize) {
 		super.init(
 			{
-				type: Sequelize.STRING,
 				area_code: Sequelize.STRING,
 				number: Sequelize.STRING,
 			},
@@ -20,7 +19,7 @@ class Phone extends Model {
 		this.belongsToMany(models.User, {
 			through: 'users_has_phones',
 			timestamps: false,
-			foreignKey: 'user_id',
+			foreignKey: 'phone_id',
 			onDelete: 'CASCADE',
 		});
 	}
