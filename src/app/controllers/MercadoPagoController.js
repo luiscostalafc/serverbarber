@@ -1,6 +1,8 @@
 import * as Yup from 'yup';
 import mercadopago from 'mercadopago';
-// import CRUD from '../repository/crud';
+import User from '../models/User';
+import Orders from '../schemas/Orders';
+import CRUD from '../repository/crud';
 
 mercadopago.configure({
 	sandbox: process.env.NODE_ENV === 'dev',
@@ -9,7 +11,6 @@ mercadopago.configure({
 	access_token: process.env.MP_ACCESS_TOKEN,
 });
 
-// mercadopago.configurations.setAccessToken(config.access_token);
 
 class MercadoPagoController {
 	async getAcessToken(req, res) {
@@ -26,44 +27,71 @@ class MercadoPagoController {
 	}
 
 	async payment(req, res) {
-		// const schema = Yup.object().shape({
-		// 	id: Yup.number().required(),
-		// 	email: Yup.email().required(),
-		// 	description: Yup.string().required(),
-		// 	amount: Yup.number().required(),
-		// });
+		const item = Yup.object().shape({
+			id: Yup.number(),
+			description: Yup.string(),
+			title: Yup.string().default((description) => description),
+			quantity: Yup.number(),
+			currency_id: Yup.string(),
+			unit_price: Yup.number(),
+		});
 
-		// schema.validate(req.body, { abortEarly: false }).catch(err => {
-		// 	return res
-		// 		.status(422)
-		// 		.set({ error: err.errors.join(', ') })
-		// 		.json({});
-		// });
+		const schema = Yup.object().shape({
+			items: Yup.array().of(item).required(),
+			user_id: Yup.number().required(),
+			provider_id: Yup.number().required(),
+		});
 
-		const { id, email, description, amount } = req.body;
+		schema.validate(req.body, { abortEarly: false }).catch(err => {
+			console.log(err);
+			return res
+				.status(422)
+				.set({ error: err.errors.join(', ') })
+				.json({});
+		});
+		const {items, user_id, provider_id } = req.body;
+		
+		const user = await CRUD.findOne(User, {
+			where: { id: user_id },
+		});
+		
+		if (!user) {
+			return res
+				.status(400)
+				.set({ error: 'User not exists' })
+				.json({});
+		}
 
+
+		const provider = await CRUD.findOne(User, {
+			where: { id: provider_id, provider: true },
+		});
+
+		if (!provider) {
+			return res
+				.status(400)
+				.set({ error: 'Provider not exists, or user not is provider' })
+				.json({});
+		}
+
+		const reference = `JB-${Date.now()}`;
+		
 		const payment_data = {
-			items: [
-				{
-					id,
-					title: description,
-					description,
-					quantity: 1,
-					currency_id: 'BRL',
-					unit_price: parseFloat(amount),
-				},
-			],
+			items,
 			payer: {
-				email,
+				email: user.email,
 			},
-			external_reference: 'teste',
+			external_reference: reference,
 		};
 
 		try {
-			const response = await mercadopago.preferences.create(payment_data);
+			const payment = await mercadopago.preferences.create(payment_data);
 			// eslint-disable-next-line no-console
-			console.log('MercadoPago payment', response);
-			return res.send(response);
+			console.log('MercadoPago payment', payment);
+			const order = await CRUD.create(
+				Orders,{reference,user,provider, items},true
+			);
+			return res.send({ payment, order });
 		} catch (err) {
 			// eslint-disable-next-line no-console
 			console.log('MercadoPago error', err);

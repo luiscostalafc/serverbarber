@@ -6,14 +6,6 @@ const OrderSchema = new mongoose.Schema(
 			type: String,
 			required: true,
 		},
-		paymentMethod: {
-			type: String,
-			required: true,
-		},
-		extraAmount: {
-			type: String,
-			required: true,
-		},
 		user: {
 			id: Number,
 			name: String,
@@ -36,26 +28,11 @@ const OrderSchema = new mongoose.Schema(
 			{
 				id: String,
 				description: String,
-				amount: Float, 
-				quantity: Number
+				unit_price: Number, 
+				quantity: Number,
+				currency_id: String
 			}
 		],
-		sender: {
-			email: String,
-			name: String,
-			cpf: String,
-			areaCode: String,
-			phone: String,
-		},
-		creditPayment: {
-			cardToken: String,
-			InstallmentQuantity: String,
-			InstalmentValue: String,
-			holderName: String,
-			holderBirthDate: Date,
-			holderAreaCode: String,
-			holderPhone: String
-		},
 	},
 	{
 		timestamps: true,
