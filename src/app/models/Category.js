@@ -5,6 +5,7 @@ class Category extends Model {
 		super.init(
 			{
 				name: Sequelize.STRING,
+				price: Sequelize.FLOAT,
 				gender: {
 					type: Sequelize.INTEGER,
 					defaultValue: 1,
@@ -19,10 +20,11 @@ class Category extends Model {
 	}
 
 	static associate(models) {
+		this.belongsTo(models.File, { foreignKey: 'avatar_id', as: 'avatar' });
 		this.belongsToMany(models.User, {
 			through: 'categories_has_users',
 			timestamps: false,
-			foreignKey: 'user_id',
+			foreignKey: 'category_id',
 			onDelete: 'CASCADE',
 		});
 	}

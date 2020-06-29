@@ -11,6 +11,10 @@ module.exports = {
 				type: Sequelize.STRING,
 				allowNull: false,
 			},
+			price: {
+				type: Sequelize.FLOAT,
+				allowNull: false,
+			},
 			gender: {
 				type: Sequelize.INTEGER,
 				allowNull: false,

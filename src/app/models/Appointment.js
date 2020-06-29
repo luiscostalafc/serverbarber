@@ -6,6 +6,7 @@ class Appointment extends Model {
 		super.init(
 			{
 				date: Sequelize.DATE,
+				services: Sequelize.STRING,
 				canceled_at: Sequelize.DATE,
 				past: {
 					type: Sequelize.VIRTUAL,

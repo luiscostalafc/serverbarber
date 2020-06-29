@@ -73,8 +73,9 @@ class NotificationController {
 	}
 
 	async create(data) {
-		const { provider_id, date } = data;
-		const user = await CRUD.findByPk(User, provider_id);
+		const { user_id, provider_id, date, items } = data;
+		const user = await CRUD.findByPk(User, user_id);
+		const provider = await CRUD.findByPk(User, provider_id);
 
 		const hourStart = startOfHour(parseISO(date));
 		const formatedDate = format(
@@ -88,7 +89,9 @@ class NotificationController {
 			{
 				content: `Novo agendamento de ${user.name}
 			para ${formatedDate}`,
-				user: provider_id,
+				user,
+				provider,
+				items,
 			},
 			true
 		);

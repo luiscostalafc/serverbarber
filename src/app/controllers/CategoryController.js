@@ -1,6 +1,7 @@
 import * as Yup from 'yup';
 import Category from '../models/Category';
 import User from '../models/User';
+import File from '../models/File';
 import CRUD from '../repository/crud';
 import SYNC from '../repository/sync';
 
@@ -20,6 +21,7 @@ class CategoryController {
 	async store(req, res) {
 		const schema = Yup.object().shape({
 			name: Yup.string().required(),
+			price: Yup.number().required(),
 			gender: Yup.number()
 				.integer()
 				.required(),
@@ -49,6 +51,11 @@ class CategoryController {
 	async gender(req, res) {
 		const category = await CRUD.findAll(Category, {
 			where: { gender: req.params.gender },
+			include: {
+				model: File,
+				as: 'avatar',
+				attributes: ['id', 'path', 'url'],
+			},
 		});
 		return res.json(category);
 	}
@@ -56,6 +63,7 @@ class CategoryController {
 	async update(req, res) {
 		const schema = Yup.object().shape({
 			name: Yup.string().required(),
+			price: Yup.number().required(),
 			gender: Yup.number()
 				.integer()
 				.required(),

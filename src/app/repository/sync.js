@@ -4,6 +4,7 @@ import CRUD from './crud';
 import Category from '../models/Category';
 import User from '../models/User';
 import Phone from '../models/Phone';
+import Appointment from '../models/Appointment';
 import File from '../models/File';
 
 class Sync {
@@ -46,6 +47,7 @@ class Sync {
 			return [];
 		}
 	}
+
 
 	async fileAddUser(fileId, userId) {
 		const file = await CRUD.findByPk(File, fileId);

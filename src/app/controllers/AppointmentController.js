@@ -6,6 +6,7 @@ import File from '../models/File';
 import Appointment from '../models/Appointment';
 import NotificationController from './NotificationController';
 
+import AppointmentMail from '../jobs/AppointmentMail';
 import CancellationMail from '../jobs/CancellationMail';
 import Queue from '../../lib/Queue';
 
@@ -39,8 +40,19 @@ class AppointmentController {
 	}
 
 	async store(req, res) {
+		const item = Yup.object().shape({
+			id: Yup.number(),
+			description: Yup.string(),
+			title: Yup.string().default((description) => description),
+			quantity: Yup.number(),
+			currency_id: Yup.string(),
+			unit_price: Yup.number(),
+		});
+
 		const schema = Yup.object().shape({
+			items: Yup.array().of(item).required(),
 			provider_id: Yup.number().required(),
+			user_id: Yup.number().required(),
 			date: Yup.date().required(),
 		});
 
@@ -51,7 +63,7 @@ class AppointmentController {
 				.json({});
 		});
 
-		const { provider_id, date } = req.body;
+		const { items, provider_id, user_id, date } = req.body;
 
 		const isProvider = await CRUD.findOne(User, {
 			where: { id: provider_id, provider: true },
@@ -89,17 +101,26 @@ class AppointmentController {
 				.json({ error: 'Appointment date is not available' });
 		}
 
+		const services = items.map(item => item.description).join(', ');
+
 		const appointmentData = {
-			user_id: req.userId,
+			user_id,
 			provider_id,
+			services,
 			date: hourStart,
 		};
 
 		const appointment = await CRUD.create(Appointment, appointmentData);
 
 		const notification = await NotificationController.create({
+			user_id,
 			provider_id,
+			items,
 			date,
+		});
+
+		await Queue.add(CancellationMail.key, {
+			appointmentData,
 		});
 
 		return res.json({ appointment, notification });

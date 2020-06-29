@@ -25,6 +25,10 @@ module.exports = {
 				onDelete: 'SET NULL',
 				allowNull: true,
 			},
+			services: {
+				type: Sequelize.STRING,
+				allowNull: false,
+			},
 			canceled_at: {
 				type: Sequelize.DATE,
 			},
