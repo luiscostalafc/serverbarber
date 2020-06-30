@@ -43,14 +43,16 @@ class AppointmentController {
 		const item = Yup.object().shape({
 			id: Yup.number(),
 			description: Yup.string(),
-			title: Yup.string().default((description) => description),
+			title: Yup.string().default(description => description),
 			quantity: Yup.number(),
 			currency_id: Yup.string(),
 			unit_price: Yup.number(),
 		});
 
 		const schema = Yup.object().shape({
-			items: Yup.array().of(item).required(),
+			items: Yup.array()
+				.of(item)
+				.required(),
 			provider_id: Yup.number().required(),
 			user_id: Yup.number().required(),
 			date: Yup.date().required(),
@@ -101,7 +103,7 @@ class AppointmentController {
 				.json({ error: 'Appointment date is not available' });
 		}
 
-		const services = items.map(item => item.description).join(', ');
+		const services = items.map(service => service.description).join(', ');
 
 		const appointmentData = {
 			user_id,
@@ -119,7 +121,7 @@ class AppointmentController {
 			date,
 		});
 
-		await Queue.add(CancellationMail.key, {
+		await Queue.add(AppointmentMail.key, {
 			appointmentData,
 		});
 

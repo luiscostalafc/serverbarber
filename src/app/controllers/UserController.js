@@ -11,8 +11,8 @@ import Card from '../models/Card';
 import CRUD from '../repository/crud';
 import SYNC from '../repository/sync';
 
-// import EnrollmentMail from '../jobs/EnrollmentMail';
-// import Queue from '../../lib/Queue';
+import EnrollmentMail from '../jobs/EnrollmentMail';
+import Queue from '../../lib/Queue';
 
 const emptyRegistry = {};
 class UserController {
@@ -73,7 +73,7 @@ class UserController {
 			provider: !!req.body.provider,
 		};
 
-		const createUser = await CRUD.create(User, req.body);
+		const createUser = await CRUD.create(User, userData);
 		if (!createUser) res.json({ erro: 'User not created' });
 
 		const { phone } = req.body;
@@ -90,6 +90,17 @@ class UserController {
 
 		const { id, name, email, provider } = createUser;
 
+		try {
+			await Queue.add(EnrollmentMail.key, {
+				id,
+				name,
+				email,
+			});
+		} catch (error) {
+			// eslint-disable-next-line no-console
+			console.log(error);
+		}
+
 		return res.json({
 			id,
 			name,
@@ -98,12 +109,6 @@ class UserController {
 			phone: createPhone,
 			sync,
 		});
-
-		// await Queue.add(EnrollmentMail.key, {
-		// 	id,
-		// 	name,
-		// 	email
-		// });
 	}
 
 	async show(req, res) {
@@ -155,7 +160,9 @@ class UserController {
 		const schema = Yup.object().shape({
 			name: Yup.string(),
 			email: Yup.string().email(),
-			oldPassword: Yup.string().min(6).required(),
+			oldPassword: Yup.string()
+				.min(6)
+				.required(),
 			password: Yup.string()
 				.min(6)
 				.when('oldPassword', (oldPassword, field) =>

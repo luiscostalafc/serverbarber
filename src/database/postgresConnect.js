@@ -16,10 +16,13 @@ const postgresConnect = () => {
 
 	try {
 		connection.authenticate();
+		// eslint-disable-next-line no-console
 		console.log(coloredLog('🤘🏻[BOOT] Postgres connected'));
 		return connection;
 	} catch (error) {
+		// eslint-disable-next-line no-console
 		console.error(`👎🏻[BOOT] Error in connection with Postgres: ${error}`);
+		throw error;
 	}
 };
 

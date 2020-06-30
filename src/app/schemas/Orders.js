@@ -28,10 +28,10 @@ const OrderSchema = new mongoose.Schema(
 			{
 				id: String,
 				description: String,
-				unit_price: Number, 
+				unit_price: Number,
 				quantity: Number,
-				currency_id: String
-			}
+				currency_id: String,
+			},
 		],
 	},
 	{

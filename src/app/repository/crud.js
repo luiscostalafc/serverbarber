@@ -1,9 +1,11 @@
 import coloredLog from '../../lib/ColoredLog';
 
 class CRUD {
-	async findAll(Model, query) {
+	async find(Model, query = {}) {
 		try {
-			const findAll = await Model.findAll(query);
+			console.time('Find');
+			const findAll = await Model.find(query);
+			console.timeEnd('Find');
 			return findAll;
 		} catch (error) {
 			const errorMsg = error.stack;
@@ -13,9 +15,23 @@ class CRUD {
 		}
 	}
 
-	async findOne(Model, query) {
+	async findAll(Model, query) {
 		try {
-			const findOne = await Model.findOne(query);
+			console.time('Find all');
+			const findAll = await Model.findAll(query);
+			console.timeEnd('Find all');
+			return findAll;
+		} catch (error) {
+			const errorMsg = error.stack;
+			// eslint-disable-next-line no-console
+			console.error(coloredLog(`FindAll: ${errorMsg}`, 'error'));
+			return [];
+		}
+	}
+
+	async findOne(Model, query, add = {}, sort = {}) {
+		try {
+			const findOne = await Model.findOne(query, add, sort);
 			return findOne;
 		} catch (error) {
 			const errorMsg = error.stack;

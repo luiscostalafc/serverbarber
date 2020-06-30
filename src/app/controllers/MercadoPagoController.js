@@ -11,7 +11,6 @@ mercadopago.configure({
 	access_token: process.env.MP_ACCESS_TOKEN,
 });
 
-
 class MercadoPagoController {
 	async getAcessToken(req, res) {
 		try {
@@ -30,14 +29,16 @@ class MercadoPagoController {
 		const item = Yup.object().shape({
 			id: Yup.number(),
 			description: Yup.string(),
-			title: Yup.string().default((description) => description),
+			title: Yup.string().default(description => description),
 			quantity: Yup.number(),
 			currency_id: Yup.string(),
 			unit_price: Yup.number(),
 		});
 
 		const schema = Yup.object().shape({
-			items: Yup.array().of(item).required(),
+			items: Yup.array()
+				.of(item)
+				.required(),
 			user_id: Yup.number().required(),
 			// provider_id: Yup.number().required(),
 		});
@@ -49,12 +50,12 @@ class MercadoPagoController {
 				.set({ error: err.errors.join(', ') })
 				.json({});
 		});
-		const {items, user_id, provider_id } = req.body;
-		
+		const { items, user_id, provider_id } = req.body;
+
 		const user = await CRUD.findOne(User, {
 			where: { id: user_id },
 		});
-		
+
 		if (!user) {
 			return res
 				.status(400)
@@ -74,7 +75,7 @@ class MercadoPagoController {
 		// }
 
 		const reference = `JB-${Date.now()}`;
-		
+
 		const payment_data = {
 			items,
 			payer: {
@@ -90,9 +91,7 @@ class MercadoPagoController {
 			// const order = await CRUD.create(
 			// 	Orders,{reference,user,provider,items},true
 			// );
-			const order = await CRUD.create(
-				Orders,{reference,user,items},true
-			);
+			const order = await CRUD.create(Orders, { reference, user, items }, true);
 			return res.send({ payment, order });
 		} catch (err) {
 			// eslint-disable-next-line no-console

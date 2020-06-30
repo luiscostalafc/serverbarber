@@ -6,6 +6,8 @@ import authMiddleware from './app/middlewares/auth';
 const routes = new Router();
 
 routes.post('/sessions', SessionController.store);
+routes.use(require('./routes/forgot'));
+
 routes.use(authMiddleware);
 
 routes.use(require('./routes/appointments'));
