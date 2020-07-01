@@ -51,11 +51,18 @@ class CategoryController {
 	async gender(req, res) {
 		const category = await CRUD.findAll(Category, {
 			where: { gender: req.params.gender },
-			include: {
-				model: File,
-				as: 'avatar',
-				attributes: ['id', 'path', 'url'],
-			},
+			include: [
+				{
+					model: File,
+					as: 'avatar',
+					attributes: ['id', 'path', 'url'],
+				},
+				{
+					model: User,
+					as: 'providers',
+					attributes: ['id', 'name', 'provider', 'email'],
+				},
+			],
 		});
 		return res.json(category);
 	}

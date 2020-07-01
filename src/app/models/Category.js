@@ -23,6 +23,7 @@ class Category extends Model {
 		this.belongsTo(models.File, { foreignKey: 'avatar_id', as: 'avatar' });
 		this.belongsToMany(models.User, {
 			through: 'categories_has_users',
+			as: 'providers',
 			timestamps: false,
 			foreignKey: 'category_id',
 			onDelete: 'CASCADE',
