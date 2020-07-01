@@ -9,6 +9,7 @@ module.exports = {
 					name: 'Jack Hair & Barber',
 					email: 'jackhair.barber@gmail.com',
 					password_hash: bcrypt.hashSync('@jackadmin', 8),
+					is_admin: true,
 					created_at: new Date(),
 					updated_at: new Date(),
 				},

@@ -17,7 +17,7 @@ class Queue {
 	init() {
 		jobs.forEach(({ key, handle }) => {
 			// eslint-disable-next-line no-console
-			console.log('Init queue', key);
+			console.log('📨 Init queue', key);
 			this.queues[key] = {
 				bee: new Bee(key, {
 					redis: redisConfig,
