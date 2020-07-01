@@ -11,25 +11,6 @@ class FileController {
 	}
 
 	async store(req, res) {
-		const schema = Yup.object().shape({
-			name: Yup.string().required(),
-			path: Yup.string().required(),
-		});
-
-		if (!req.file) {
-			return res
-				.status(422)
-				.set({ error: 'File is required' })
-				.json({});
-		}
-
-		schema.validate(req.file, { abortEarly: false }).catch(err => {
-			return res
-				.status(422)
-				.set({ error: err.errors.join(', ') })
-				.json({});
-		});
-
 		const { originalname: name, filename: path } = req.file;
 
 		const file = await CRUD.create(File, {
