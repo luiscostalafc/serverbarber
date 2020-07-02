@@ -1,11 +1,13 @@
-FROM node:10-alpine
+FROM node:14-alpine 
 
-WORKDIR /www
-COPY package.json yarn.lock ./
+WORKDIR /src
 
-RUN yarn
+ADD package.json /src
 
-COPY . .
+RUN npm i
 
-EXPOSE 3000
-CMD ["yarn", "start"]
+ADD . /src
+
+RUN npm run build 
+
+CMD npm start

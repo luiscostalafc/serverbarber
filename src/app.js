@@ -8,7 +8,6 @@ import * as Sentry from '@sentry/node';
 import 'express-async-errors';
 import http from 'http';
 import socketActions from './socket.io';
-// import io from 'socket.io';
 import routes from './routes';
 import sentryConfig from './config/sentry';
 
@@ -28,7 +27,8 @@ class App {
 	}
 
 	socket() {
-		this.io = socketActions(this.server);
+		const io = socketActions(this.server);
+		this.app.set('io', io);
 	}
 
 	middlewares() {
