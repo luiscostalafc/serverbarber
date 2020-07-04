@@ -17,6 +17,7 @@ class App {
 	constructor() {
 		this.app = express();
 		this.server = http.Server(this.app);
+		this.app.use(cors());
 
 		if (process.env.NODE_ENV !== 'dev') Sentry.init(sentryConfig);
 
@@ -33,7 +34,6 @@ class App {
 
 	middlewares() {
 		this.app.use(Sentry.Handlers.requestHandler());
-		this.app.use(cors());
 		this.app.use(express.json());
 		this.app.use(
 			'/files',
