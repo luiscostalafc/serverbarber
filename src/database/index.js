@@ -1,6 +1,9 @@
-import postgresConnect from './postgresConnect';
+import Sequelize from 'sequelize';
+// import postgresConnect from './postgresConnect';
 import redisConnect from './redisConnect';
 import mongoConnect from './mongoConnect';
+
+import databaseConfig from '../config/database';
 
 import Appointment from '../app/models/Appointment';
 import Card from '../app/models/Card';
@@ -20,7 +23,7 @@ class Database {
 	}
 
 	init() {
-		this.connection = postgresConnect();
+		this.connection = new Sequelize(databaseConfig);
 
 		models
 			.map(model => model.init(this.connection))

@@ -2,7 +2,7 @@ import coloredLog from './lib/ColoredLog';
 // import io from 'socket.io';
 
 const socketActions = server => {
-	const io = require('socket.io')(server).listen(9090);
+	const io = require('socket.io')(server).listen(9091);
 	console.log(coloredLog(`👌 [BOOT] socket is connected`));
 
 	io.on('connection', socket => {
