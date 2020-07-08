@@ -137,7 +137,7 @@ class UserController {
 				{
 					model: Phone,
 					as: 'phones',
-					attributes: ['id', 'type', 'area_code', 'number'],
+					attributes: ['id', 'area_code', 'number'],
 				},
 				{
 					model: Card,
