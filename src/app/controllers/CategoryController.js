@@ -11,6 +11,7 @@ class CategoryController {
 			include: [
 				{
 					model: User,
+					as: 'providers',
 					attributes: ['id', 'name', 'provider', 'email'],
 				},
 			],
