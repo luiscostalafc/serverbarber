@@ -10,6 +10,8 @@ import {
 } from 'date-fns';
 import { Op } from 'sequelize';
 import Appointment from '../models/Appointment';
+import User from '../models/User';
+import Phone from '../models/Phone';
 import CRUD from '../repository/crud';
 
 class AvailableController {
@@ -35,12 +37,28 @@ class AvailableController {
 			where: {
 				provider_id,
 				canceled_at: null,
-				date: {
-					[Op.between]: [startDay, endDay],
-				},
+				// date: {
+				// 	[Op.between]: [startDay, endDay],
+				// },
 			},
+			include: [
+				{
+					model: User,
+					as: 'user',
+					attributes: ['id', 'name', 'email'],
+					include: [
+						{
+							model: Phone,
+							as: 'phones',
+							attributes: ['id', 'area_code', 'number'],
+						},
+					],
+				},
+			],
 		});
 
+
+		// return res.json(appointments);
 		const schedule = [
 			'08:00',
 			'09:00',
@@ -70,9 +88,14 @@ class AvailableController {
 				available:
 					isAfter(value, new Date()) &&
 					!appointments.find(a => format(a.date, 'HH:mm') === time),
+				user: {
+					name: appointments.map(a => a.user.name)[0],
+					email: appointments.map(a => a.user.email)[0],
+					phones: appointments.map(a => a.user.phones)[0],
+					services: appointments.map(a => a.services),
+				}
 			};
 		});
-
 		return res.json(available);
 	}
 }
