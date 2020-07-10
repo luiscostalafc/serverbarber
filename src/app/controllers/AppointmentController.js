@@ -34,7 +34,7 @@ class AppointmentController {
 				{
 					model: User,
 					as: 'provider',
-					attributes: ['id', 'name'],
+					attributes: ['id', 'name', 'gender', 'is_admin'],
 					include: [
 						{
 							model: File,

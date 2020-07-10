@@ -45,7 +45,7 @@ class AvailableController {
 				{
 					model: User,
 					as: 'user',
-					attributes: ['id', 'name', 'email'],
+					attributes: ['id', 'name', 'email', 'gender', 'is_admin'],
 					include: [
 						{
 							model: Phone,

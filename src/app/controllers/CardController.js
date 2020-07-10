@@ -59,7 +59,7 @@ class CardController {
 			include: [
 				{
 					model: User,
-					attributes: ['name', 'email'],
+					attributes: ['name', 'email', 'gender', 'provider', 'is_admin'],
 				},
 			],
 		});

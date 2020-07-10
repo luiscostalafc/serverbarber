@@ -26,7 +26,7 @@ class FileController {
 			include: [
 				{
 					model: User,
-					attributes: ['name', 'email'],
+					attributes: ['name', 'email', 'provider', 'gender', 'is_admin'],
 				},
 			],
 		});

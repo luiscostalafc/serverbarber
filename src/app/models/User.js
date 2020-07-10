@@ -12,6 +12,7 @@ class User extends Model {
 				provider: Sequelize.BOOLEAN,
 				is_admin: Sequelize.BOOLEAN,
 				password_request: Sequelize.BOOLEAN,
+				gender: Sequelize.INTEGER,
 			},
 			{
 				sequelize,

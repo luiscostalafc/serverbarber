@@ -65,7 +65,7 @@ class PointController {
 				{
 					model: User,
 					as: 'user',
-					attributes: ['id', 'name', 'provider', 'email'],
+					attributes: ['id', 'name', 'provider', 'email', 'gender', 'is_admin'],
 				},
 			],
 		});

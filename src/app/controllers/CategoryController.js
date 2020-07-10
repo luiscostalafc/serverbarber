@@ -12,7 +12,7 @@ class CategoryController {
 				{
 					model: User,
 					as: 'providers',
-					attributes: ['id', 'name', 'provider', 'email'],
+					attributes: ['id', 'name', 'provider', 'email', 'gender', 'is_admin'],
 				},
 			],
 		});
@@ -61,7 +61,7 @@ class CategoryController {
 				{
 					model: User,
 					as: 'providers',
-					attributes: ['id', 'name', 'provider', 'email'],
+					attributes: ['id', 'name', 'provider', 'email', 'gender', 'is_admin'],
 				},
 			],
 		});

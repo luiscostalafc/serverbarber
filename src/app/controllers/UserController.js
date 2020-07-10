@@ -61,6 +61,12 @@ class UserController {
 			phone: Yup.string()
 				.required()
 				.min(6),
+			provider: Yup.boolean(),
+			gender: Yup.number()
+				.when('provider', {
+					is: (provider) => provider,
+					then: Yup.number().required()
+				}),
 		});
 
 		schema.validate(req.body, { abortEarly: false }).catch(err => {
@@ -122,6 +128,7 @@ class UserController {
 			provider,
 			phone: createPhone,
 			sync,
+			gender
 		});
 	}
 
@@ -185,6 +192,12 @@ class UserController {
 			confirmPassword: Yup.string().when('password', (password, field) =>
 				password ? field.required().oneOf([Yup.ref('password')]) : field
 			),
+			provider: Yup.boolean(),
+			gender: Yup.number()
+				.when('provider', {
+					is: (provider) => provider,
+					then: Yup.number().required()
+				}),
 		});
 
 		schema.validate(req.body, { abortEarly: false }).catch(err => {
@@ -221,7 +234,7 @@ class UserController {
 		});
 
 		if (!findUser) res.json({ error: 'User not found' });
-		const { id, name, email: NewEmail, avatar, category } = findUser;
+		const { id, name, email: NewEmail, avatar, category, gender, provider } = findUser;
 
 		return res.json({
 			id,
@@ -229,6 +242,8 @@ class UserController {
 			email: NewEmail,
 			avatar,
 			category,
+			gender,
+			provider,
 		});
 	}
 
