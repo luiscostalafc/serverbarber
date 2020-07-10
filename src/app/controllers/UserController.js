@@ -24,6 +24,13 @@ class UserController {
 	async providers(req, res) {
 		const users = await CRUD.findAll(User, {
 			where: { provider: true },
+			include: [
+				{
+					model: Phone,
+					as: 'phones',
+					attributes: ['id', 'area_code', 'number'],
+				},
+			],
 		});
 		return res.json(users);
 	}
@@ -31,6 +38,13 @@ class UserController {
 	async notProviders(req, res) {
 		const users = await CRUD.findAll(User, {
 			where: { provider: false },
+			include: [
+				{
+					model: Phone,
+					as: 'phones',
+					attributes: ['id', 'area_code', 'number'],
+				},
+			],
 		});
 		return res.json(users);
 	}

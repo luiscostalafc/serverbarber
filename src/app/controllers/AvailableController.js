@@ -92,7 +92,7 @@ class AvailableController {
 					name: appointments.map(a => a.user.name)[0],
 					email: appointments.map(a => a.user.email)[0],
 					phones: appointments.map(a => a.user.phones)[0],
-					services: appointments.map(a => a.services),
+					services: appointments.map(a => a.services)[0],
 				}
 			};
 		});
