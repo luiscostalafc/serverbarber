@@ -13,21 +13,28 @@ import Queue from '../../lib/Queue';
 
 class AppointmentController {
 	async index(req, res) {
-
 		const user = await CRUD.findByPk(User, req.userId);
 		if (!user.is_admin) {
 			return res
-		.status(401)
-		.set({ error: 'Not admin' })
-		.json({});
+				.status(401)
+				.set({ error: 'Not admin' })
+				.json({});
 		}
-		
+
 		const { page = 1 } = req.query;
 
 		const appointments = await CRUD.findAll(Appointment, {
 			where: { canceled_at: null },
 			order: ['date'],
-			attributes: ['id', 'date', 'past', 'cancelable', 'user_id', 'provider_id', 'services'],
+			attributes: [
+				'id',
+				'date',
+				'past',
+				'cancelable',
+				'user_id',
+				'provider_id',
+				'services',
+			],
 			limit: 20,
 			offset: (page - 1) * 20,
 			include: [
@@ -55,7 +62,15 @@ class AppointmentController {
 		const appointments = await CRUD.findAll(Appointment, {
 			where: { canceled_at: null, provider_id: req.params.id },
 			order: ['date'],
-			attributes: ['id', 'date', 'past', 'cancelable', 'user_id', 'provider_id', 'services'],
+			attributes: [
+				'id',
+				'date',
+				'past',
+				'cancelable',
+				'user_id',
+				'provider_id',
+				'services',
+			],
 			limit: 20,
 			offset: (page - 1) * 20,
 			include: [
@@ -165,7 +180,7 @@ class AppointmentController {
 
 		return res.json({ appointment, notification });
 	}
-	
+
 	async unavailable(req, res) {
 		const schema = Yup.object().shape({
 			date: Yup.date().required(),
@@ -181,14 +196,14 @@ class AppointmentController {
 		const user = await CRUD.findByPk(User, req.userId);
 		if (!user.is_admin) {
 			return res
-		.status(401)
-		.set({ error: 'Not admin' })
-		.json({});
+				.status(401)
+				.set({ error: 'Not admin' })
+				.json({});
 		}
 
 		const { date } = req.body;
 		const hourStart = startOfHour(parseISO(date));
-		
+
 		const checkAvailability = await CRUD.findOne(Appointment, {
 			where: {
 				date: hourStart,
@@ -196,9 +211,7 @@ class AppointmentController {
 		});
 
 		if (checkAvailability) {
-			return res
-				.status(400)
-				.json({ error: 'Appointment date is busy' });
+			return res.status(400).json({ error: 'Appointment date is busy' });
 		}
 
 		const appointmentData = {

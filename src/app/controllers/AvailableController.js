@@ -57,7 +57,6 @@ class AvailableController {
 			],
 		});
 
-
 		// return res.json(appointments);
 		const schedule = [
 			'08:00',
@@ -93,7 +92,7 @@ class AvailableController {
 					email: appointments.map(a => a.user.email)[0],
 					phones: appointments.map(a => a.user.phones)[0],
 					services: appointments.map(a => a.services)[0],
-				}
+				},
 			};
 		});
 		return res.json(available);
