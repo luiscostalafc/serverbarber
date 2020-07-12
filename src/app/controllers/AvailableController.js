@@ -1,7 +1,6 @@
-import * as Yup from 'yup';
 import {
-	// startOfDay,
-	// endOfDay,
+	startOfDay,
+	endOfDay,
 	setHours,
 	setMinutes,
 	setSeconds,
@@ -10,54 +9,27 @@ import {
 } from 'date-fns';
 import { Op } from 'sequelize';
 import Appointment from '../models/Appointment';
-import User from '../models/User';
-import Phone from '../models/Phone';
-import CRUD from '../repository/crud';
 
 class AvailableController {
 	async index(req, res) {
-		const schema = Yup.object().shape({
-			provider_id: Yup.number().required(),
-			date: Yup.date().required(),
-		});
+		const { date } = req.query;
 
-		schema.validate(req.body, { abortEarly: false }).catch(err => {
-			return res
-				.status(422)
-				.set({ error: err.errors.join(', ') })
-				.json({});
-		});
+		if (!date) {
+			return res.status(400).json({ error: 'Invalid date' });
+		}
 
-		const { provider_id, date } = req.body;
+		const searchDate = Number(date);
 
-		const searchDate = new Date(date);
-		const { startDay, endDay } = searchDate.getDate();
-
-		const appointments = await CRUD.findAll(Appointment, {
+		const appointments = await Appointment.findAll({
 			where: {
-				provider_id,
+				provider_id: req.params.providerId,
 				canceled_at: null,
-				// date: {
-				// 	[Op.between]: [startDay, endDay],
-				// },
-			},
-			include: [
-				{
-					model: User,
-					as: 'user',
-					attributes: ['id', 'name', 'email', 'gender', 'is_admin'],
-					include: [
-						{
-							model: Phone,
-							as: 'phones',
-							attributes: ['id', 'area_code', 'number'],
-						},
-					],
+				date: {
+					[Op.between]: [startOfDay(searchDate), endOfDay(searchDate)],
 				},
-			],
+			},
 		});
 
-		// return res.json(appointments);
 		const schedule = [
 			'08:00',
 			'09:00',
@@ -87,14 +59,9 @@ class AvailableController {
 				available:
 					isAfter(value, new Date()) &&
 					!appointments.find(a => format(a.date, 'HH:mm') === time),
-				user: {
-					name: appointments.map(a => a.user.name)[0],
-					email: appointments.map(a => a.user.email)[0],
-					phones: appointments.map(a => a.user.phones)[0],
-					services: appointments.map(a => a.services)[0],
-				},
 			};
 		});
+
 		return res.json(available);
 	}
 }

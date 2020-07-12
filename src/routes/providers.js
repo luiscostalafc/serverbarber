@@ -6,6 +6,6 @@ const router = require('express').Router();
 router.get('/providers', ProviderController.index);
 router.get('/providers/man', ProviderController.man);
 router.get('/providers/woman', ProviderController.woman);
-router.post('/providers/available', AvailableController.index);
+router.get('/providers/:providerId/available', AvailableController.index);
 
 module.exports = router;

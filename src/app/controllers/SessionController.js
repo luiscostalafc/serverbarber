@@ -49,7 +49,7 @@ class SessionController {
 				provider,
 				avatar,
 				is_admin,
-				gender
+				gender,
 			},
 			token: jwt.sign({ id }, authConfig.secret, {
 				expiresIn: authConfig.expiresIn,

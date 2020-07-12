@@ -24,7 +24,7 @@ class AppointmentController {
 		const { page = 1 } = req.query;
 
 		const appointments = await CRUD.findAll(Appointment, {
-			where: { canceled_at: null },
+			where: { user_id: req.userId, canceled_at: null },
 			order: ['date'],
 			attributes: [
 				'id',
@@ -107,7 +107,6 @@ class AppointmentController {
 				.of(item)
 				.required(),
 			provider_id: Yup.number().required(),
-			user_id: Yup.number().required(),
 			date: Yup.date().required(),
 		});
 
@@ -118,7 +117,7 @@ class AppointmentController {
 				.json({});
 		});
 
-		const { items, provider_id, user_id, date } = req.body;
+		const { items, provider_id, date } = req.body;
 
 		const isProvider = await CRUD.findOne(User, {
 			where: { id: provider_id, provider: true },
@@ -159,7 +158,7 @@ class AppointmentController {
 		const services = items.map(service => service.description).join(', ');
 
 		const appointmentData = {
-			user_id,
+			user_id: req.userId,
 			provider_id,
 			services,
 			date: hourStart,
@@ -168,7 +167,7 @@ class AppointmentController {
 		const appointment = await CRUD.create(Appointment, appointmentData);
 
 		const notification = await NotificationController.create({
-			user_id,
+			user_id: req.userId,
 			provider_id,
 			items,
 			date,
