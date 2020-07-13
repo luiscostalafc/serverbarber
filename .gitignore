@@ -2,7 +2,7 @@
 .env
 node_modules
 dist
-tmp/
-tmp/uploads/
-tmp/uploads/*.png
+#tmp/
+#tmp/uploads/
+#tmp/uploads/*.png
 ~

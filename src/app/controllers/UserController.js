@@ -34,7 +34,17 @@ class UserController {
 				{
 					model: Address,
 					as: 'address',
-					attributes: ['id', 'cep', 'zone', 'state', 'city', 'district', 'street', 'number', 'complement'],
+					attributes: [
+						'id',
+						'cep',
+						'zone',
+						'state',
+						'city',
+						'district',
+						'street',
+						'number',
+						'complement',
+					],
 				},
 			],
 		});
@@ -53,7 +63,17 @@ class UserController {
 				{
 					model: Address,
 					as: 'address',
-					attributes: ['id', 'cep', 'zone', 'state', 'city', 'district', 'street', 'number', 'complement'],
+					attributes: [
+						'id',
+						'cep',
+						'zone',
+						'state',
+						'city',
+						'district',
+						'street',
+						'number',
+						'complement',
+					],
 				},
 			],
 		});
@@ -184,7 +204,17 @@ class UserController {
 				{
 					model: Address,
 					as: 'address',
-					attributes: ['id', 'cep', 'zone', 'state', 'city', 'district', 'street', 'number', 'complement'],
+					attributes: [
+						'id',
+						'cep',
+						'zone',
+						'state',
+						'city',
+						'district',
+						'street',
+						'number',
+						'complement',
+					],
 				},
 			],
 		});
@@ -247,7 +277,17 @@ class UserController {
 				{
 					model: Address,
 					as: 'address',
-					attributes: ['id', 'cep', 'zone', 'state', 'city', 'district', 'street', 'number', 'complement'],
+					attributes: [
+						'id',
+						'cep',
+						'zone',
+						'state',
+						'city',
+						'district',
+						'street',
+						'number',
+						'complement',
+					],
 				},
 			],
 		});
