@@ -31,6 +31,7 @@ class User extends Model {
 	static associate(models) {
 		this.belongsTo(models.File, { foreignKey: 'avatar_id', as: 'avatar' });
 		this.hasMany(models.Point, { foreignKey: 'user_id', as: 'points' });
+		this.hasMany(models.Address, { foreignKey: 'user_id', as: 'address' });
 		this.hasMany(models.Appointment, {
 			foreignKey: 'user_id',
 			as: 'appointments',

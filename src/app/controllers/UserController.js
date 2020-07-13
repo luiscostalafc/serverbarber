@@ -4,6 +4,7 @@ import User from '../models/User';
 import File from '../models/File';
 import Point from '../models/Point';
 import Appointment from '../models/Appointment';
+import Address from '../models/Address';
 import Phone from '../models/Phone';
 import Category from '../models/Category';
 import Card from '../models/Card';
@@ -30,6 +31,11 @@ class UserController {
 					as: 'phones',
 					attributes: ['id', 'area_code', 'number'],
 				},
+				{
+					model: Address,
+					as: 'address',
+					attributes: ['id', 'cep', 'zone', 'state', 'city', 'district', 'street', 'number', 'complement'],
+				},
 			],
 		});
 		return res.json(users);
@@ -43,6 +49,11 @@ class UserController {
 					model: Phone,
 					as: 'phones',
 					attributes: ['id', 'area_code', 'number'],
+				},
+				{
+					model: Address,
+					as: 'address',
+					attributes: ['id', 'cep', 'zone', 'state', 'city', 'district', 'street', 'number', 'complement'],
 				},
 			],
 		});
@@ -170,6 +181,11 @@ class UserController {
 						'holder_birth_date',
 					],
 				},
+				{
+					model: Address,
+					as: 'address',
+					attributes: ['id', 'cep', 'zone', 'state', 'city', 'district', 'street', 'number', 'complement'],
+				},
 			],
 		});
 
@@ -227,6 +243,11 @@ class UserController {
 					model: Category,
 					as: 'categories',
 					attributes: ['id', 'name'],
+				},
+				{
+					model: Address,
+					as: 'address',
+					attributes: ['id', 'cep', 'zone', 'state', 'city', 'district', 'street', 'number', 'complement'],
 				},
 			],
 		});
