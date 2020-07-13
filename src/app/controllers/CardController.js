@@ -49,7 +49,6 @@ class CardController {
 				.set({ error: 'Card already exists' })
 				.json({});
 		}
-
 		const card = await CRUD.create(Card, req.body);
 		return res.json(card);
 	}

@@ -89,6 +89,7 @@ class CRUD {
 	}
 
 	async create(Model, value, mongo = false) {
+		console.log(value);
 		try {
 			console.time('⏱ Create');
 			const create = await Model.create(value);

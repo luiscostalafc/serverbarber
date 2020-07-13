@@ -6,6 +6,7 @@ import mongoConnect from './mongoConnect';
 import databaseConfig from '../config/database';
 
 import Appointment from '../app/models/Appointment';
+import Address from '../app/models/Address';
 import Card from '../app/models/Card';
 import Category from '../app/models/Category';
 import File from '../app/models/File';
@@ -13,7 +14,7 @@ import Phone from '../app/models/Phone';
 import Point from '../app/models/Point';
 import User from '../app/models/User';
 
-const models = [Appointment, Card, Category, File, Phone, Point, User];
+const models = [Appointment, Address, Card, Category, File, Phone, Point, User];
 
 class Database {
 	constructor() {

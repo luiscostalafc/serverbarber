@@ -11,6 +11,7 @@ routes.use(require('./routes/forgot'));
 routes.use(authMiddleware);
 
 routes.use(require('./routes/appointments'));
+routes.use(require('./routes/addresses'));
 routes.use(require('./routes/cards'));
 routes.use(require('./routes/categories'));
 routes.use(require('./routes/files'));
