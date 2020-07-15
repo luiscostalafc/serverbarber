@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 import * as Yup from 'yup';
 import { startOfHour, parseISO, format } from 'date-fns';
 import pt from 'date-fns/locale/pt';
@@ -8,14 +9,15 @@ import CRUD from '../repository/crud';
 
 class NotificationController {
 	async index(req, res) {
-		const checkIsProvider = await CRUD.findOne(User, {
-			where: { id: req.userId, provider: true },
+		const user = await CRUD.findOne(User, {
+			where: { id: req.userId },
 		});
 
-		if (!checkIsProvider) {
+		// se for ao menos uma das condições vai passar
+		if (!user.provider && !user.is_admin) {
 			return res
 				.status(400)
-				.json({ error: 'Only provider can load notifications' });
+				.json({ error: 'Only provider or admins can load notifications' });
 		}
 
 		const notifications = await CRUD.findAndSort(

@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import coloredLog from '../../lib/ColoredLog';
 
 class CRUD {
@@ -132,7 +133,9 @@ class CRUD {
 		} catch (error) {
 			const errorMsg = error.stack;
 			// eslint-disable-next-line no-console
-			console.error(coloredLog(`🚨 findByIdAndUpdateMongo: ${errorMsg}`, 'error'));
+			console.error(
+				coloredLog(`🚨 findByIdAndUpdateMongo: ${errorMsg}`, 'error')
+			);
 			return [];
 		}
 	}

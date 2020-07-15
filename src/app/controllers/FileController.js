@@ -1,4 +1,3 @@
-import * as Yup from 'yup';
 import File from '../models/File';
 import User from '../models/User';
 import CRUD from '../repository/crud';
@@ -35,33 +34,10 @@ class FileController {
 	}
 
 	async update(req, res) {
-		const schema = Yup.object().shape({
-			name: Yup.string().required(),
-			path: Yup.string().required(),
-		});
-
-		if (!req.file) {
-			return res
-				.status(422)
-				.set({ error: 'File is required' })
-				.json({});
-		}
-
-		schema.validate(req.file, { abortEarly: false }).catch(err => {
-			return res
-				.status(422)
-				.set({ error: err.errors.join(', ') })
-				.json({});
-		});
-
-		const { originalname: name, filename: path } = req.file;
-
-		const file = await CRUD.findByIdAndUpdate(File, req.params.id, {
-			name,
-			path,
-		});
-
-		return res.json(file);
+		return res
+			.status(501)
+			.set({ error: 'Not implemented' })
+			.json({});
 	}
 
 	async delete(req, res) {
