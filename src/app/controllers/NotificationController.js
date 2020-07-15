@@ -44,9 +44,12 @@ class NotificationController {
 				.json({});
 		});
 
-		const { provider_id, date } = req.body;
+		const { date } = req.body;
+		const userId = req.body.user_id ? req.body.user_id : req.userId;
+		const providerId = req.body.provider_id ? req.body.provider_id : userId;
 
-		const user = await CRUD.findByPk(User, provider_id);
+		const user = await CRUD.findByPk(User, userId);
+		const provider = await CRUD.findByPk(User, providerId);
 
 		const hourStart = startOfHour(parseISO(date));
 		const formatedDate = format(
@@ -60,7 +63,8 @@ class NotificationController {
 			{
 				content: `Novo agendamento de ${user.name}
 			para ${formatedDate}`,
-				user: provider_id,
+				user,
+				provider,
 			},
 			true
 		);

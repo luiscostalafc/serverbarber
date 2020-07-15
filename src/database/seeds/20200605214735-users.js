@@ -15,9 +15,9 @@ module.exports = {
 				},
 				{
 					name: 'Usuário teste',
-					email: 'luiscostalafc@outlook.com',
+					email: 'luiscostalafc@gmail.com', // alterado para gmail pois não pode ter dois emails iguais
 					password_hash: bcrypt.hashSync('123456', 8),
-					provider: false,
+					provider: true,
 					created_at: new Date(),
 					updated_at: new Date(),
 				},

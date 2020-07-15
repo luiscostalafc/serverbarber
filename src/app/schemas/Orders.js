@@ -6,23 +6,13 @@ const OrderSchema = new mongoose.Schema(
 			type: String,
 			required: true,
 		},
-		user: {
-			id: Number,
-			name: String,
-			email: String,
-			provider: Boolean,
-			created_at: Date,
-			updated_at: Date,
-			avatart_id: Number,
+		user_id: {
+			type: Number,
+			required: true,
 		},
-		provider: {
-			id: Number,
-			name: String,
-			email: String,
-			provider: Boolean,
-			created_at: Date,
-			updated_at: Date,
-			avatart_id: Number,
+		provider_id: {
+			type: Number,
+			required: true,
 		},
 		items: [
 			{

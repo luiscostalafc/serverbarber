@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import * as Yup from 'yup';
 import mercadopago from 'mercadopago';
 import User from '../models/User';
@@ -15,8 +16,10 @@ class MercadoPagoController {
 	async getAcessToken(req, res) {
 		try {
 			const accessToken = await mercadopago.getAccessToken();
-			// eslint-disable-next-line no-console
-			console.log('MercadoPago accessToken', accessToken);
+			if (process.env.NODE_ENV === 'dev') {
+				// eslint-disable-next-line no-console
+				console.log('MercadoPago accessToken', accessToken);
+			}
 			return res.json(accessToken);
 		} catch (err) {
 			// eslint-disable-next-line no-console
@@ -40,7 +43,7 @@ class MercadoPagoController {
 				.of(item)
 				.required(),
 			user_id: Yup.number().required(),
-			// provider_id: Yup.number().required(),
+			provider_id: Yup.number(), // não obrigatório
 		});
 
 		schema.validate(req.body, { abortEarly: false }).catch(err => {
@@ -50,7 +53,9 @@ class MercadoPagoController {
 				.set({ error: err.errors.join(', ') })
 				.json({});
 		});
-		const { items, user_id, provider_id } = req.body;
+
+		const { items, user_id } = req.body;
+		const providerId = req.body.provider_id ? req.body.provider_id : req.userId;
 
 		const user = await CRUD.findOne(User, {
 			where: { id: user_id },
@@ -63,16 +68,16 @@ class MercadoPagoController {
 				.json({});
 		}
 
-		// const provider = await CRUD.findOne(User, {
-		// 	where: { id: provider_id, provider: true },
-		// });
+		const provider = await CRUD.findOne(User, {
+			where: { id: providerId, provider: true },
+		});
 
-		// if (!provider) {
-		// 	return res
-		// 		.status(400)
-		// 		.set({ error: 'Provider not exists, or user not is provider' })
-		// 		.json({});
-		// }
+		if (!provider) {
+			return res
+				.status(400)
+				.set({ error: 'Provider not exists, or user not is provider' })
+				.json({});
+		}
 
 		const reference = `JB-${Date.now()}`;
 
@@ -87,12 +92,16 @@ class MercadoPagoController {
 		try {
 			const payment = await mercadopago.preferences.create(payment_data);
 			// eslint-disable-next-line no-console
-			console.log('MercadoPago payment', payment);
-			// const order = await CRUD.create(
-			// 	Orders,{reference,user,provider,items},true
-			// );
-			const order = await CRUD.create(Orders, { reference, user, items }, true);
-			return res.send({ payment, order });
+			if (process.env.NODE_ENV === 'dev') {
+				// eslint-disable-next-line no-console
+				console.log('MercadoPago payment', payment);
+			}
+			const order = await CRUD.create(
+				Orders,
+				{ reference, user_id: user.id, provider_id: provider.id, items },
+				true
+			);
+			return res.json({ payment, order });
 		} catch (err) {
 			// eslint-disable-next-line no-console
 			console.log('MercadoPago error', err);

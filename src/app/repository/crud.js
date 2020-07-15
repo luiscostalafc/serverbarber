@@ -90,7 +90,6 @@ class CRUD {
 	}
 
 	async create(Model, value, mongo = false) {
-		console.log(value);
 		try {
 			console.time('⏱ Create');
 			const create = await Model.create(value);
@@ -100,6 +99,35 @@ class CRUD {
 			const errorMsg = mongo ? error : error.stack;
 			// eslint-disable-next-line no-console
 			console.error(coloredLog(`🚨 create: ${errorMsg}`, 'error'));
+			return [];
+		}
+	}
+
+	async createOrUpdate(Model, where, newItem) {
+		const foundItem = await Model.findOne({ where });
+		if (!foundItem) {
+			try {
+				console.time('⏱ Create or update - CREATE');
+				const item = await Model.create(newItem);
+				console.timeEnd('⏱ Create or update - CREATE');
+				return { item, created: true };
+			} catch (error) {
+				const errorMsg = error.stack;
+				// eslint-disable-next-line no-console
+				console.error(coloredLog(`🚨 create or update: ${errorMsg}`, 'error'));
+				return [];
+			}
+		}
+
+		try {
+			console.time('⏱ Create or update - UPDATE');
+			const item = await Model.update(newItem, { where });
+			console.timeEnd('⏱ Create or update - UPDATE');
+			return { item, created: false };
+		} catch (error) {
+			const errorMsg = error.stack;
+			// eslint-disable-next-line no-console
+			console.error(coloredLog(`🚨 create or update: ${errorMsg}`, 'error'));
 			return [];
 		}
 	}

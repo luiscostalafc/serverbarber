@@ -37,7 +37,11 @@ class AddressController {
 				.json({});
 		});
 
-		const address = await CRUD.create(Address, req.body);
+		const address = await CRUD.createOrUpdate(
+			Address,
+			{ user_id: req.body.user_id },
+			req.body
+		);
 		return res.json(address);
 	}
 
@@ -56,32 +60,33 @@ class AddressController {
 	}
 
 	async update(req, res) {
-		const schema = Yup.object().shape({
-			user_id: Yup.number().required(),
-			cep: Yup.string(),
-			zone: Yup.string(),
-			state: Yup.string(),
-			city: Yup.string(),
-			district: Yup.string(),
-			street: Yup.string(),
-			number: Yup.string(),
-			complement: Yup.string(),
-		});
+		return res.status(501).json({ error: 'Not implemented' });
+		// const schema = Yup.object().shape({
+		// 	user_id: Yup.number().required(),
+		// 	cep: Yup.string(),
+		// 	zone: Yup.string(),
+		// 	state: Yup.string(),
+		// 	city: Yup.string(),
+		// 	district: Yup.string(),
+		// 	street: Yup.string(),
+		// 	number: Yup.string(),
+		// 	complement: Yup.string(),
+		// });
 
-		schema.validate(req.body, { abortEarly: false }).catch(err => {
-			return res
-				.status(422)
-				.set({ error: err.errors.join(', ') })
-				.json({});
-		});
+		// schema.validate(req.body, { abortEarly: false }).catch(err => {
+		// 	return res
+		// 		.status(422)
+		// 		.set({ error: err.errors.join(', ') })
+		// 		.json({});
+		// });
 
-		const address = await CRUD.findByIdAndUpdate(
-			Address,
-			req.params.id,
-			{ read: true },
-			{ new: true }
-		);
-		return res.json(address);
+		// const address = await CRUD.findByIdAndUpdate(
+		// 	Address,
+		// 	req.params.id,
+		// 	{ read: true },
+		// 	{ new: true }
+		// );
+		// return res.json(address);
 	}
 
 	async delete(req, res) {
