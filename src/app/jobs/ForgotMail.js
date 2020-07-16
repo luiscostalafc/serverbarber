@@ -21,7 +21,7 @@ class ForgotMail {
 			});
 		} catch (error) {
 			// eslint-disable-next-line no-console
-			console.error(coloredLog(`🚨 AppointmentMail: ${error}`, 'error'));
+			console.error(coloredLog(`🚨 ForgotMail: ${error}`, 'error'));
 		}
 	}
 }
