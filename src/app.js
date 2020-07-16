@@ -35,11 +35,15 @@ class App {
 	middlewares() {
 		this.app.use(Sentry.Handlers.requestHandler());
 		this.app.use(express.json());
+
 		this.app.use(
 			'/files',
 			express.static(path.resolve(__dirname, '..', 'tmp', 'uploads'))
 		);
-
+		this.app.use(
+			'/assets',
+			express.static(path.resolve(__dirname, '.', 'assets'))
+		);
 		this.app.use((req, res, next) => {
 			req.io = this.io;
 			req.connectedUsers = this.connectedUsers;

@@ -11,12 +11,12 @@ class ForgotMail {
 			const { user, randompass } = data;
 
 			await Mail.sendMain({
-				to: `${user.name}  <${user.email}>`,
+				to: `${user.name || 'NAME'}  <${user.email || 'EMAIL'}>`,
 				subject: 'Recuperação da senha',
 				template: 'forgot',
 				context: {
-					user: user.name,
-					randompass,
+					user: user.name || 'CONTEXT NAME',
+					randompass: randompass || 'PASS',
 				},
 			});
 		} catch (error) {
