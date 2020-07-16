@@ -13,13 +13,13 @@ import Queue from '../../lib/Queue';
 
 class AppointmentController {
 	async index(req, res) {
-		const user = await CRUD.findByPk(User, req.userId);
-		if (!user.is_admin) {
-			return res
-				.status(401)
-				.set({ error: 'Not admin' })
-				.json({});
-		}
+		// const user = await CRUD.findByPk(User, req.userId);
+		// if (!user.is_admin) {
+		// 	return res
+		// 		.status(401)
+		// 		.set({ error: 'Not admin' })
+		// 		.json({});
+		// }
 
 		const { page = 1 } = req.query;
 
