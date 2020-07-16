@@ -89,9 +89,6 @@ class UserController {
 			password: Yup.string()
 				.required()
 				.min(6),
-			phone: Yup.string()
-				.required()
-				.min(6),
 			provider: Yup.boolean(),
 			gender: Yup.number().when('provider', {
 				is: provider => provider,
@@ -117,7 +114,7 @@ class UserController {
 		}
 
 		const userData = {
-			name: req.body.email,
+			name: req.body.name,
 			email: req.body.email,
 			password: req.body.password,
 			provider: !!req.body.provider,
@@ -251,9 +248,19 @@ class UserController {
 				.json(emptyRegistry);
 		});
 
-		const { oldPassword } = req.body;
+		const { email, oldPassword } = req.body;
 
-		const user = await CRUD.findByPk(User, req.params.id);
+		const user = await CRUD.findByPk(User, req.userId);
+
+		if (email && email !== user.email) {
+			const userExists = await User.findOne({
+				where: { email },
+			});
+
+			if (userExists) {
+				return res.status(400).json({ error: 'User already exists' });
+			}
+		}
 
 		if (oldPassword && !(await user.checkPassword(oldPassword))) {
 			return res.status(401).json({ error: 'Password does not match' });
@@ -262,7 +269,7 @@ class UserController {
 		const update = await user.update(req.body);
 		if (!update) res.json({ error: 'User not updated' });
 
-		const findUser = await CRUD.findByPk(User, req.params.id, {
+		const { id, name, email: NewEmail, avatar, category, gender, provider} = await User.findByPk(req.userId, {
 			include: [
 				{
 					model: File,
