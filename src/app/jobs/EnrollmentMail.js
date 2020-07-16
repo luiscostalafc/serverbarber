@@ -6,14 +6,14 @@ class EnrollmentMail {
 	}
 
 	async handle({ data }) {
-		const { id } = data;
+		const { name, email } = data;
 
 		await Mail.sendMail({
-			to: `${id.user.name} <${id.user.email}>`,
+			to: `${name} <${email}>`,
 			subject: 'Bem vindo à Jack Hair & Barber',
 			template: 'enrollment',
 			context: {
-				name: id.name,
+				name,
 			},
 		});
 	}
