@@ -1,4 +1,5 @@
 import Mail from '../../lib/Mail';
+import coloredLog from '../../lib/ColoredLog';
 
 class EnrollmentMail {
 	get key() {
@@ -6,16 +7,21 @@ class EnrollmentMail {
 	}
 
 	async handle({ data }) {
-		const { name, email } = data;
+		try {
+			const { name, email } = data;
 
-		await Mail.sendMail({
-			to: `${name} <${email}>`,
-			subject: 'Bem vindo à Jack Hair & Barber',
-			template: 'enrollment',
-			context: {
-				name,
-			},
-		});
+			await Mail.sendMail({
+				to: `${name} <${email}>`,
+				subject: 'Bem vindo à Jack Hair & Barber',
+				template: 'enrollment',
+				context: {
+					name,
+				},
+			});
+		} catch (error) {
+			// eslint-disable-next-line no-console
+			console.error(coloredLog(`🚨 AppointmentMail: ${error}`, 'error'));
+		}
 	}
 }
 

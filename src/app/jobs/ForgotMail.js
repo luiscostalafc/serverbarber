@@ -1,4 +1,5 @@
 import Mail from '../../lib/Mail';
+import coloredLog from '../../lib/ColoredLog';
 
 class ForgotMail {
 	get key() {
@@ -6,17 +7,22 @@ class ForgotMail {
 	}
 
 	async handle({ data }) {
-		const { forgot } = data;
+		try {
+			const { forgot } = data;
 
-		await Mail.sendMain({
-			to: `${forgot.user.name}  <${forgot.user.email}>`,
-			subject: 'Recuperação da senha',
-			template: 'forgot',
-			context: {
-				user: forgot.user.name,
-				randompass: forgot.randompass,
-			},
-		});
+			await Mail.sendMain({
+				to: `${forgot.user.name}  <${forgot.user.email}>`,
+				subject: 'Recuperação da senha',
+				template: 'forgot',
+				context: {
+					user: forgot.user.name,
+					randompass: forgot.randompass,
+				},
+			});
+		} catch (error) {
+			// eslint-disable-next-line no-console
+			console.error(coloredLog(`🚨 AppointmentMail: ${error}`, 'error'));
+		}
 	}
 }
 
