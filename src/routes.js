@@ -7,6 +7,7 @@ const routes = new Router();
 
 routes.post('/sessions', SessionController.store);
 routes.use(require('./routes/forgot'));
+routes.use(require('./routes/signin'));
 
 routes.use(authMiddleware);
 
