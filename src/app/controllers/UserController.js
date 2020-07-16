@@ -82,16 +82,15 @@ class UserController {
 
 	async store(req, res) {
 		const schema = Yup.object().shape({
-			name: Yup.string().required(),
-			email: Yup.string()
+			name: Yup.string().required("Preencha seu nome completo!"),
+			email: Yup.string(" O e-mail é obrigatório!")
 				.email()
 				.required(),
-			password: Yup.string()
+			password: Yup.string("Senha dever ter no mínimo de 6 caracteres!")
 				.required()
 				.min(6),
-			phone: Yup.string()
-				.required()
-				.min(6),
+				phone: Yup.string("Preencha seu número com o DDD!")
+				.required(),
 			provider: Yup.boolean(),
 			gender: Yup.number().when('provider', {
 				is: provider => provider,
@@ -251,7 +250,7 @@ class UserController {
 				.json(emptyRegistry);
 		});
 
-		const { oldPassword, email } = req.body;
+		const { email } = req.body;
 
 		const user = await User.findByPk(req.userId);
 
@@ -263,10 +262,6 @@ class UserController {
 			if (userExists) {
 				return res.status(400).json({ error: 'User already exists' });
 			}
-		}
-
-		if (oldPassword && !(await user.chekckPassword(oldPassword))) {
-			return res.status(401).json({ error: 'Password does not match' });
 		}
 
 		const update = await user.update(req.body);
