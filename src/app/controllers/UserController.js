@@ -251,18 +251,28 @@ class UserController {
 				.json(emptyRegistry);
 		});
 
-		const { oldPassword } = req.body;
+		const { oldPassword, email } = req.body;
 
-		const user = await CRUD.findByPk(User, req.params.id);
+		const user = await User.findByPk(req.userId);
 
-		if (oldPassword && !(await user.checkPassword(oldPassword))) {
+		if (email && email !== user.email) {
+			const userExists = await User.findOne({
+				where: { email },
+			});
+
+			if (userExists) {
+				return res.status(400).json({ error: 'User already exists' });
+			}
+		}
+
+		if (oldPassword && !(await user.chekckPassword(oldPassword))) {
 			return res.status(401).json({ error: 'Password does not match' });
 		}
 
 		const update = await user.update(req.body);
 		if (!update) res.json({ error: 'User not updated' });
 
-		const findUser = await CRUD.findByPk(User, req.params.id, {
+		const findUser = await CRUD.findByPk(User, req.userId, {
 			include: [
 				{
 					model: File,
