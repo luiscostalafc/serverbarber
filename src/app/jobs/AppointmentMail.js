@@ -7,15 +7,17 @@ class AppointmentMail {
 		return 'AppointmentMail';
 	}
 
+
 	async handle({ data }) {
 		const { appointment } = data;
 
+
 		await Mail.sendMain({
-			to: `${appointment.provider.name}  <${appointment.provider.email}>`,
+			to: `${appointment.user.provider.name}  <${appointment.user.provider.email}>`,
 			subject: 'Novo agendamento',
 			template: 'appointment',
 			context: {
-				provider: appointment.provider.name,
+				provider: appointment.user.provider.name,
 				user: appointment.user.name,
 				services: appointment.services,
 				date: format(

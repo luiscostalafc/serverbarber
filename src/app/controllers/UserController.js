@@ -82,16 +82,15 @@ class UserController {
 
 	async store(req, res) {
 		const schema = Yup.object().shape({
-			name: Yup.string().required(),
-			email: Yup.string()
+			name: Yup.string().required("Preencha seu nome completo!"),
+			email: Yup.string(" O e-mail é obrigatório!")
 				.email()
 				.required(),
-			password: Yup.string()
+			password: Yup.string("Senha dever ter no mínimo de 6 caracteres!")
 				.required()
 				.min(6),
-			phone: Yup.string()
-				.required()
-				.min(6),
+				phone: Yup.string("Preencha seu número com o DDD!")
+				.required(),
 			provider: Yup.boolean(),
 			gender: Yup.number().when('provider', {
 				is: provider => provider,
@@ -117,7 +116,7 @@ class UserController {
 		}
 
 		const userData = {
-			name: req.body.email,
+			name: req.body.name,
 			email: req.body.email,
 			password: req.body.password,
 			provider: !!req.body.provider,
@@ -251,18 +250,24 @@ class UserController {
 				.json(emptyRegistry);
 		});
 
-		const { oldPassword } = req.body;
+		const { email } = req.body;
 
-		const user = await CRUD.findByPk(User, req.params.id);
+		const user = await User.findByPk(req.userId);
 
-		if (oldPassword && !(await user.checkPassword(oldPassword))) {
-			return res.status(401).json({ error: 'Password does not match' });
+		if (email && email !== user.email) {
+			const userExists = await User.findOne({
+				where: { email },
+			});
+
+			if (userExists) {
+				return res.status(400).json({ error: 'User already exists' });
+			}
 		}
 
 		const update = await user.update(req.body);
 		if (!update) res.json({ error: 'User not updated' });
 
-		const findUser = await CRUD.findByPk(User, req.params.id, {
+		const findUser = await CRUD.findByPk(User, req.userId, {
 			include: [
 				{
 					model: File,
