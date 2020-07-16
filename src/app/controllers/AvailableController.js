@@ -22,8 +22,8 @@ class AvailableController {
 		if (!providerId)
 			return res.status(400).json({ error: 'Invalid or not has providerId' });
 
-		const data = moment(date).format();
-		const searchDate = parseISO(data);
+
+		const searchDate = Number(date);
 
 		const appointments = await Appointment.findAll({
 			where: {
