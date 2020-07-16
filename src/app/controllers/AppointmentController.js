@@ -141,7 +141,7 @@ class AppointmentController {
 			res.status(400).json({ error: 'Past dates are not permitted' });
 		}
 
-		const checkAvailability = await CRUD.findOne(Appointment, {
+		const checkAvailability = await Appointment.findOne({
 			where: {
 				provider_id,
 				canceled_at: null,
