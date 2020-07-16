@@ -8,15 +8,15 @@ class ForgotMail {
 
 	async handle({ data }) {
 		try {
-			const { forgot } = data;
+			const { user, randompass } = data;
 
 			await Mail.sendMain({
-				to: `${forgot.user.name}  <${forgot.user.email}>`,
+				to: `${user.name}  <${user.email}>`,
 				subject: 'Recuperação da senha',
 				template: 'forgot',
 				context: {
-					user: forgot.user.name,
-					randompass: forgot.randompass,
+					user: user.name,
+					randompass,
 				},
 			});
 		} catch (error) {
