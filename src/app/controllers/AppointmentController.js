@@ -173,6 +173,10 @@ class AppointmentController {
 			date,
 		});
 
+		await Queue.add(AppointmentMail.key, {
+			appointment,
+		});
+
 		return res.json({ appointment, notification });
 	}
 
@@ -217,10 +221,6 @@ class AppointmentController {
 		};
 
 		const appointment = await CRUD.create(Appointment, appointmentData);
-
-		await Queue.add(AppointmentMail.key, {
-			appointment,
-		});
 
 		const notification = await CRUD.create(
 			Notification,
