@@ -32,6 +32,11 @@ class UserController {
 					attributes: ['id', 'area_code', 'number'],
 				},
 				{
+					model: File,
+					as: 'avatar',
+					attributes: ['id', 'path', 'url'],
+				},
+				{
 					model: Address,
 					as: 'address',
 					attributes: [
