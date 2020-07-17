@@ -295,7 +295,7 @@ class UserController {
 			],
 		});
 
-		if (!findUser) res.json({ error: 'User not found' });
+		if (!findUser) res.status(404).json({ error: 'User not found' });
 		const {
 			id,
 			name,
