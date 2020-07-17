@@ -8,14 +8,14 @@ class EnrollmentMail {
 
 	async handle({ data }) {
 		try {
-			const { user } = data;
+			const { createUser } = data;
 
 			await Mail.sendMail({
-				to: `${user.name} <${user.email}>`,
+				to: `${createUser.name} <${createUser.email}>`,
 				subject: 'Bem vindo à Jack Hair & Barber',
 				template: 'enrollment',
 				context: {
-					user,
+					user: createUser.name,
 				},
 			});
 		} catch (error) {

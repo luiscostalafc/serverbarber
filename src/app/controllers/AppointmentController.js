@@ -173,10 +173,6 @@ class AppointmentController {
 			date,
 		});
 
-		await Queue.add(AppointmentMail.key, {
-			appointmentData,
-		});
-
 		return res.json({ appointment, notification });
 	}
 
@@ -220,7 +216,24 @@ class AppointmentController {
 			date: hourStart,
 		};
 
-		const appointment = await CRUD.create(Appointment, appointmentData);
+		const appointment = await CRUD.create(Appointment, appointmentData, {
+			include: [
+				{
+					model: User,
+					as: 'provider',
+					attributes: ['name', 'email'],
+				},
+				{
+					model: User,
+					as: 'user',
+					attributes: ['name'],
+				},
+			],
+		});
+
+		await Queue.add(AppointmentMail.key, {
+			appointment,
+		});
 
 		const notification = await CRUD.create(
 			Notification,

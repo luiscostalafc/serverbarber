@@ -127,6 +127,7 @@ class UserController {
 		};
 
 		const createUser = await CRUD.create(User, userData);
+
 		if (!createUser) res.json({ erro: 'User not created' });
 
 		const { phone } = req.body;
@@ -143,16 +144,9 @@ class UserController {
 
 		const { id, name, email, provider, gender } = createUser;
 
-		try {
-			await Queue.add(EnrollmentMail.key, {
-				id,
-				name,
-				email,
-			});
-		} catch (error) {
-			// eslint-disable-next-line no-console
-			console.log(error);
-		}
+		await Queue.add(EnrollmentMail.key, {
+			createUser,
+		});
 
 		return res.json({
 			id,
