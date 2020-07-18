@@ -1,4 +1,5 @@
 import Bee from 'bee-queue';
+import coloredLog from './ColoredLog';
 import AppointmentMail from '../app/jobs/AppointmentMail';
 import CancellationMail from '../app/jobs/CancellationMail';
 import EnrollmentMail from '../app/jobs/EnrollmentMail';
@@ -15,20 +16,34 @@ class Queue {
 	}
 
 	init() {
-		jobs.forEach(({ key, handle }) => {
-			// eslint-disable-next-line no-console
-			console.log('📨 Init queue', key);
-			this.queues[key] = {
-				bee: new Bee(key, {
-					redis: redisConfig,
-				}),
-				handle,
-			};
-		});
+		if (jobs) {
+			jobs.forEach(({ key, handle }) => {
+				if (!key) {
+					// eslint-disable-next-line no-console
+					console.log('📨 Init queue: Not has key');
+				}
+				// eslint-disable-next-line no-console
+				console.log('📨 Init queue', key);
+				this.queues[key] = {
+					bee: new Bee(key, {
+						redis: redisConfig,
+					}),
+					handle,
+				};
+			});
+		}
+		// eslint-disable-next-line no-console
+		console.log('📨 Init queue: Not has jobs');
 	}
 
 	add(queue, job) {
-		return this.queues[queue].bee.createJob(job).save();
+		try {
+			return this.queues[queue].bee.createJob(job).save();
+		} catch (error) {
+			// eslint-disable-next-line no-console
+			console.error(coloredLog(`🚨 Add queue error: ${error}`, 'error'));
+			throw new Error(error);
+		}
 	}
 
 	processQueue() {
