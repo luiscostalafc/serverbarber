@@ -113,7 +113,7 @@ class ForgotController {
 			Forgot,
 			{ user_id: user.id },
 			{},
-			{ created_at: -1 }
+			{ createdAt: -1 }
 		);
 
 		const now = moment();

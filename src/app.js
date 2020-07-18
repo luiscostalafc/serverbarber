@@ -19,7 +19,7 @@ class App {
 		this.server = http.Server(this.app);
 		this.app.use(cors());
 
-		if (process.env.NODE_ENV !== 'dev') Sentry.init(sentryConfig);
+		if (process.env.NODE_ENV === 'development') Sentry.init(sentryConfig);
 
 		this.middlewares();
 		this.socket();
