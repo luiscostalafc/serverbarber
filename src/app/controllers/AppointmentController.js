@@ -119,11 +119,11 @@ class AppointmentController {
 
 		const { items, provider_id, date } = req.body;
 
-		const isProvider = await CRUD.findOne(User, {
+		const provider = await CRUD.findOne(User, {
 			where: { id: provider_id, provider: true },
 		});
 
-		if (!isProvider) {
+		if (!provider) {
 			return res
 				.status(401)
 				.json({ error: 'You can only create appointments with providers' });
@@ -133,6 +133,14 @@ class AppointmentController {
 			return res
 				.status(401)
 				.json({ error: `You can't create appointments with yourself` });
+		}
+
+		const user = await CRUD.findOne(User, {
+			where: { id: req.userId },
+		});
+
+		if (!user) {
+			return res.status(400).json({ error: `User not found` });
 		}
 
 		const hourStart = startOfHour(parseISO(date));
@@ -174,7 +182,12 @@ class AppointmentController {
 		});
 
 		await Queue.add(AppointmentMail.key, {
-			appointment,
+			to: provider.name,
+			email: provider.email,
+			providerName: provider.name,
+			client: user.name,
+			date: hourStart,
+			services,
 		});
 
 		return res.json({ appointment, notification });

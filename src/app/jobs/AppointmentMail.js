@@ -10,45 +10,40 @@ class AppointmentMail {
 	}
 
 	async handle({ data }) {
-		const { appointment } = data;
-		const to =
-			appointment && appointment.user && appointment.user.name
-				? appointment.user.name
-				: 'TO';
-		console.error(coloredLog(`📨 AppointmentMail handle to: ${to}`));
-		const email =
-			appointment && appointment.user && appointment.user.email
-				? appointment.user.email
-				: 'luiscostalafc@gmail.com';
-		console.error(coloredLog(`📨 AppointmentMail handle email: ${email}`));
-		const provider =
-			appointment && appointment.provider && appointment.provider.name
-				? appointment.provider.name
-				: 'PROVIDER';
-		console.error(
-			coloredLog(`📨 AppointmentMail handle provider: ${provider}`)
-		);
-		const user =
-			appointment && appointment.user && appointment.user.name
-				? appointment.user.name
-				: 'user';
-		console.error(coloredLog(`📨 AppointmentMail handle user: ${user}`));
-		const services =
-			appointment && appointment.items ? appointment.items : 'services';
-		console.error(
-			coloredLog(`📨 AppointmentMail handle services: ${services}`)
-		);
-		const date =
-			appointment && appointment.date
-				? format(
-						parseISO(appointment.date),
-						"'dia' dd 'de' MMMM', às' H:mm'h'",
-						{
-							locale: pt,
-						}
-				  )
-				: 'DATE';
-		console.error(coloredLog(`📨 AppointmentMail handle date: ${date}`));
+		const { to, email, providerName, client, date, services } = data;
+
+		if (!to)
+			console.error(
+				coloredLog(`📨 AppointmentMail handle error : TO not defined`, 'error')
+			);
+		if (!email)
+			console.error(
+				coloredLog(`📨 AppointmentMail handle error: EMAIL not defined`)
+			);
+		if (!providerName)
+			console.error(
+				coloredLog(`📨 AppointmentMail handle error: PROVIDER NAME not defined`)
+			);
+		if (!client)
+			console.error(
+				coloredLog(
+					`📨 AppointmentMail handle error: CLIENT/USER NAME not defined`
+				)
+			);
+		if (!services)
+			console.error(
+				coloredLog(`📨 AppointmentMail handle error: SERVICES not defined`)
+			);
+
+		const appointmentDate = date
+			? format(parseISO(date), "'dia' dd 'de' MMMM', às' H:mm'h'", {
+					locale: pt,
+			  })
+			: 'DATE';
+		if (appointmentDate === 'DATE')
+			console.error(
+				coloredLog(`📨 AppointmentMail handle error: DATE not defined`)
+			);
 
 		try {
 			await Mail.sendMain({
@@ -56,10 +51,10 @@ class AppointmentMail {
 				subject: 'Novo agendamento',
 				template: 'appointment',
 				context: {
-					provider,
-					user,
+					providerName,
+					client,
 					services,
-					date,
+					appointmentDate,
 				},
 			});
 		} catch (error) {
