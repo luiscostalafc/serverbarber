@@ -19,7 +19,7 @@ class AppointmentMail {
 		const email =
 			appointment && appointment.user && appointment.user.email
 				? appointment.user.email
-				: 'Mail';
+				: 'luiscostalafc@gmail.com';
 		console.error(coloredLog(`📨 AppointmentMail handle email: ${email}`));
 		const provider =
 			appointment && appointment.provider && appointment.provider.name
