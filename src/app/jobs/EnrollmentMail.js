@@ -10,7 +10,7 @@ class EnrollmentMail {
 		try {
 			const { createUser } = data;
 
-			await Mail.sendMail({
+			await Mail.sendMain({
 				to: `${createUser.name} <${createUser.email}>`,
 				subject: 'Bem vindo à Jack Hair & Barber',
 				template: 'enrollment',
