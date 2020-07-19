@@ -185,8 +185,8 @@ class AppointmentController {
 			to: provider.name,
 			email: provider.email,
 			providerName: provider.name,
-			client: user.name,
-			date: hourStart,
+			client: user,
+			date,
 			services,
 		});
 
