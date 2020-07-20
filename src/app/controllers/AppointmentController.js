@@ -141,7 +141,7 @@ class AppointmentController {
 
 		const user = await CRUD.findOne(User, {
 			where: { id: req.userId },
-			attributes: ['id', 'name'],
+			attributes: ['id', 'name', 'street', 'area_code', 'number'],
 			include: [
 				{
 					model: Address,
