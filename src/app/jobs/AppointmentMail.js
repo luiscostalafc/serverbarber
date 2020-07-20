@@ -18,6 +18,8 @@ class AppointmentMail {
 			client,
 			date,
 			services,
+			totalPrices,
+			totalQuantities,
 			address,
 		} = data;
 
@@ -51,6 +53,16 @@ class AppointmentMail {
 			console.error(
 				coloredLog(`📨 AppointmentMail handle error: SERVICES not defined`)
 			);
+		if (!totalQuantities)
+			console.error(
+				coloredLog(
+					`📨 AppointmentMail handle error: totalQuantities not defined`
+				)
+			);
+		if (!totalPrices)
+			console.error(
+				coloredLog(`📨 AppointmentMail handle error: totalPrices not defined`)
+			);
 
 		const appointmentDate = date
 			? format(parseISO(date), "'dia' dd 'de' MMMM', às' H:mm'h'", {
@@ -73,6 +85,8 @@ class AppointmentMail {
 					phone,
 					address,
 					services,
+					totalQuantities,
+					totalPrices,
 					appointmentDate,
 				},
 			});

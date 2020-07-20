@@ -208,10 +208,12 @@ class AppointmentController {
 			email: provider.email,
 			providerName: provider.name,
 			client: user.name,
-			phone: user.phone,
-			address: user.address,
+			phone: user.phones,
+			address: user.address.street,
 			date: hourStart,
-			services: { totalQuantities, services, totalPrices },
+			services,
+			totalPrices,
+			totalQuantities,
 		});
 
 		return res.json({ appointment, notification });
