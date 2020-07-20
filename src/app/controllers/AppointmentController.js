@@ -2,8 +2,6 @@ import * as Yup from 'yup';
 import { startOfHour, parseISO, isBefore, subHours } from 'date-fns';
 import CRUD from '../repository/crud';
 import User from '../models/User';
-import Address from '../models/Address';
-import Phone from '../models/Phone';
 import File from '../models/File';
 import Appointment from '../models/Appointment';
 import Notification from '../schemas/Notification';
@@ -165,34 +163,12 @@ class AppointmentController {
 				.json({ error: 'Appointment date is not available' });
 		}
 
-		const totalPrices = items
-			.map(totalPrice => totalPrice.unit_price)
-			.join(', ');
 		const services = items.map(service => service.description).join(', ');
-
-		const userData = await CRUD.findAll(User, {
-			where: { user_id: req.userId },
-			attributes: ['id', 'name'],
-			include: [
-				{
-					model: Phone,
-					as: 'phones',
-					attributes: ['id', 'area_code', 'number'],
-				},
-				{
-					model: Address,
-					as: 'address',
-					attributes: ['id', 'street'],
-				},
-			],
-		});
 
 		const appointmentData = {
 			user_id: req.userId,
 			provider_id,
 			services,
-			userData,
-			totalPrices,
 			date: hourStart,
 		};
 
@@ -212,9 +188,6 @@ class AppointmentController {
 			client: user.name,
 			date: hourStart,
 			services,
-			total: totalPrices,
-			phone: userData.phone.number,
-			address: userData.address.street,
 		});
 
 		return res.json({ appointment, notification });
