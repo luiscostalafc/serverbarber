@@ -2,8 +2,8 @@ import * as Yup from 'yup';
 import { startOfHour, parseISO, isBefore, subHours } from 'date-fns';
 import CRUD from '../repository/crud';
 import User from '../models/User';
-import Phone from '../models/Phone';
 import Address from '../models/Address';
+import Phone from '../models/Phone';
 import File from '../models/File';
 import Appointment from '../models/Appointment';
 import Notification from '../schemas/Notification';
@@ -165,17 +165,14 @@ class AppointmentController {
 				.json({ error: 'Appointment date is not available' });
 		}
 
+		const totalPrices = items
+			.map(totalPrice => totalPrice.unit_price)
+			.join(', ');
 		const services = items.map(service => service.description).join(', ');
 
-		const appointmentData = {
-			user_id: req.userId,
-			provider_id,
-			services,
-			date: hourStart,
-		};
-
-		const users = await CRUD.findOne(User, {
-			where: { id: req.userId },
+		const userData = await CRUD.findAll(User, {
+			where: { user_id: req.userId },
+			attributes: ['id', 'name'],
 			include: [
 				{
 					model: Phone,
@@ -185,20 +182,19 @@ class AppointmentController {
 				{
 					model: Address,
 					as: 'address',
-					attributes: [
-						'id',
-						'cep',
-						'zone',
-						'state',
-						'city',
-						'district',
-						'street',
-						'number',
-						'complement',
-					],
+					attributes: ['id', 'street'],
 				},
 			],
 		});
+
+		const appointmentData = {
+			user_id: req.userId,
+			provider_id,
+			services,
+			userData,
+			totalPrices,
+			date: hourStart,
+		};
 
 		const appointment = await CRUD.create(Appointment, appointmentData);
 
@@ -216,7 +212,9 @@ class AppointmentController {
 			client: user.name,
 			date: hourStart,
 			services,
-			users,
+			total: totalPrices,
+			phone: userData.phone[0].number,
+			address: userData.address[0].street,
 		});
 
 		return res.json({ appointment, notification });
