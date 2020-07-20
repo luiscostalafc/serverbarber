@@ -151,7 +151,7 @@ class AppointmentController {
 				{
 					model: Phone,
 					as: 'phones',
-					attributes: ['id', 'are_code', 'number'],
+					attributes: ['id', 'area_code', 'number'],
 				},
 			],
 		});
