@@ -163,12 +163,10 @@ class AppointmentController {
 				.json({ error: 'Appointment date is not available' });
 		}
 
-		const services = items.map(service => service.description).join(', ');
-		const totalPrices = items
-			.map(totalPrice => totalPrice.unit_price)
-			.join(', ');
-		const totalQuantities = items
-			.map(totalQuantity => totalQuantity.quantity)
+		const services = items
+			.map(
+				service => service.description && service.unit_price && service.quantity
+			)
 			.join(', ');
 		const appointmentData = {
 			user_id: req.userId,
@@ -192,11 +190,9 @@ class AppointmentController {
 			providerName: provider.name,
 			client: user.name,
 			phone: user.phone,
-			address: user.addresses.street,
+			address: user.addresses,
 			date: hourStart,
 			services,
-			totalPrices,
-			totalQuantities,
 		});
 
 		return res.json({ appointment, notification });

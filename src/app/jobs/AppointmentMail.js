@@ -19,8 +19,6 @@ class AppointmentMail {
 			date,
 			services,
 			address,
-			totalPrices,
-			totalQuantities,
 		} = data;
 
 		if (!to)
@@ -38,16 +36,6 @@ class AppointmentMail {
 		if (!phone)
 			console.error(
 				coloredLog(`📨 AppointmentMail handle error: Phone not defined`)
-			);
-		if (!totalPrices)
-			console.error(
-				coloredLog(`📨 AppointmentMail handle error: totalPrices not defined`)
-			);
-		if (!totalQuantities)
-			console.error(
-				coloredLog(
-					`📨 AppointmentMail handle error: totalQuantities not defined`
-				)
 			);
 		if (!providerName)
 			console.error(
@@ -86,8 +74,6 @@ class AppointmentMail {
 					address,
 					services,
 					appointmentDate,
-					totalPrices,
-					totalQuantities,
 				},
 			});
 		} catch (error) {
