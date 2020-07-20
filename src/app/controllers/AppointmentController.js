@@ -163,7 +163,7 @@ class AppointmentController {
 				.json({ error: 'Appointment date is not available' });
 		}
 
-		const services = items.map(service => service.description).join(', ');
+		const services = items.map(service => service.description).split(' ');
 
 		const appointmentData = {
 			user_id: req.userId,
