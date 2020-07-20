@@ -2,8 +2,6 @@ import * as Yup from 'yup';
 import { startOfHour, parseISO, isBefore, subHours } from 'date-fns';
 import CRUD from '../repository/crud';
 import User from '../models/User';
-import Address from '../models/Address';
-import Phone from '../models/Phone';
 import File from '../models/File';
 import Appointment from '../models/Appointment';
 import Notification from '../schemas/Notification';
@@ -137,23 +135,8 @@ class AppointmentController {
 				.json({ error: `You can't create appointments with yourself` });
 		}
 
-		// /// AQUI!!
-
 		const user = await CRUD.findOne(User, {
 			where: { id: req.userId },
-			attributes: ['id', 'name'],
-			include: [
-				{
-					model: Address,
-					as: 'address',
-					attributes: ['id', 'user_id', 'street'],
-				},
-				{
-					model: Phone,
-					as: 'phones',
-					attributes: ['id', 'area_code', 'number'],
-				},
-			],
 		});
 
 		if (!user) {
@@ -180,7 +163,7 @@ class AppointmentController {
 				.json({ error: 'Appointment date is not available' });
 		}
 
-		const services = items.map(service => service).join(', ');
+		const services = items.map(service => service.description).join(', ');
 
 		const appointmentData = {
 			user_id: req.userId,
@@ -189,29 +172,12 @@ class AppointmentController {
 			date: hourStart,
 		};
 
-		const users = await CRUD.findOne(User, {
-			where: { id: req.userId },
-			attributes: ['id', 'name'],
-			include: [
-				{
-					model: Address,
-					as: 'address',
-					attributes: ['id', 'user_id', 'street'],
-				},
-				{
-					model: Phone,
-					as: 'phones',
-					attributes: ['id', 'area_code', 'number'],
-				},
-			],
-		});
-
 		const appointment = await CRUD.create(Appointment, appointmentData);
 
 		const notification = await NotificationController.create({
 			user_id: req.userId,
 			provider_id,
-			services,
+			items,
 			date,
 		});
 
@@ -219,8 +185,7 @@ class AppointmentController {
 			to: provider.name,
 			email: provider.email,
 			providerName: provider.name,
-			users,
-			user,
+			client: user.name,
 			date: hourStart,
 			services,
 		});

@@ -10,7 +10,7 @@ class AppointmentMail {
 	}
 
 	async handle({ data }) {
-		const { to, email, providerName, date, users, user, services } = data;
+		const { to, email, providerName, client, date, services } = data;
 
 		if (!to)
 			console.error(
@@ -20,38 +20,20 @@ class AppointmentMail {
 			console.error(
 				coloredLog(`📨 AppointmentMail handle error: EMAIL not defined`)
 			);
-		if (!users)
-			console.error(
-				coloredLog(`📨 AppointmentMail handle error: Address not defined`)
-			);
-		if (!user)
-			console.error(
-				coloredLog(`📨 AppointmentMail handle error: Phone not defined`)
-			);
 		if (!providerName)
 			console.error(
 				coloredLog(`📨 AppointmentMail handle error: PROVIDER NAME not defined`)
 			);
-		// if (!client)
-		// 	console.error(
-		// 		coloredLog(
-		// 			`📨 AppointmentMail handle error: CLIENT/USER NAME not defined`
-		// 		)
-		// 	);
+		if (!client)
+			console.error(
+				coloredLog(
+					`📨 AppointmentMail handle error: CLIENT/USER NAME not defined`
+				)
+			);
 		if (!services)
 			console.error(
 				coloredLog(`📨 AppointmentMail handle error: SERVICES not defined`)
 			);
-		// if (!totalQuantities)
-		// 	console.error(
-		// 		coloredLog(
-		// 			`📨 AppointmentMail handle error: totalQuantities not defined`
-		// 		)
-		// 	);
-		// if (!totalPrices)
-		// 	console.error(
-		// 		coloredLog(`📨 AppointmentMail handle error: totalPrices not defined`)
-		// 	);
 
 		const appointmentDate = date
 			? format(parseISO(date), "'dia' dd 'de' MMMM', às' H:mm'h'", {
@@ -70,9 +52,7 @@ class AppointmentMail {
 				template: 'appointment',
 				context: {
 					providerName,
-					client: user.name,
-					phone: users.phones.number,
-					address: users.address.street,
+					client,
 					services,
 					appointmentDate,
 				},
