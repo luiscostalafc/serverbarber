@@ -164,9 +164,11 @@ class AppointmentController {
 		}
 
 		const services = items
-			.map(
-				service => service.description && service.unit_price && service.quantity
-			)
+			.map(service => [
+				service.description,
+				service.unit_price,
+				service.quantity,
+			])
 			.join(', ');
 		const appointmentData = {
 			user_id: req.userId,
@@ -174,6 +176,11 @@ class AppointmentController {
 			services,
 			date: hourStart,
 		};
+
+		const userLocations = user.map(userLocation => [
+			userLocation.phone,
+			userLocation.address,
+		]);
 
 		const appointment = await CRUD.create(Appointment, appointmentData);
 
@@ -189,7 +196,7 @@ class AppointmentController {
 			email: provider.email,
 			providerName: provider.name,
 			client: user.name,
-			phone: user.phone,
+			phone: userLocations,
 			address: user.addresses,
 			date: hourStart,
 			services,
