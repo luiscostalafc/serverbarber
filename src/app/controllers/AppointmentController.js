@@ -204,7 +204,7 @@ class AppointmentController {
 			providerName: provider.name,
 			user,
 			date: hourStart,
-			item,
+			items,
 		});
 
 		return res.json({ appointment, notification });

@@ -10,7 +10,7 @@ class AppointmentMail {
 	}
 
 	async handle({ data }) {
-		const { to, email, providerName, date, user, item } = data;
+		const { to, email, providerName, date, user, items } = data;
 
 		if (!to)
 			console.error(
@@ -24,7 +24,7 @@ class AppointmentMail {
 			console.error(
 				coloredLog(`📨 AppointmentMail handle error: Address not defined`)
 			);
-		if (!item)
+		if (!items)
 			console.error(
 				coloredLog(`📨 AppointmentMail handle error: Phone not defined`)
 			);
@@ -74,9 +74,9 @@ class AppointmentMail {
 					ddd: user.phones.area_code,
 					phone: user.phones.number,
 					address: user.address.street,
-					services: item.description,
-					totalPrices: item.unit_price,
-					totalQuantities: item.quantity,
+					services: items.description,
+					totalPrices: items.unit_price,
+					totalQuantities: items.quantity,
 					appointmentDate,
 				},
 			});
