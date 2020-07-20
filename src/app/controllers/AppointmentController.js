@@ -2,6 +2,8 @@ import * as Yup from 'yup';
 import { startOfHour, parseISO, isBefore, subHours } from 'date-fns';
 import CRUD from '../repository/crud';
 import User from '../models/User';
+import Address from '../models/Address';
+import Phone from '../models/Phone';
 import File from '../models/File';
 import Appointment from '../models/Appointment';
 import Notification from '../schemas/Notification';
@@ -10,6 +12,7 @@ import NotificationController from './NotificationController';
 import AppointmentMail from '../jobs/AppointmentMail';
 import CancellationMail from '../jobs/CancellationMail';
 import Queue from '../../lib/Queue';
+// import { phone } from 'faker';
 
 class AppointmentController {
 	async index(req, res) {
@@ -135,8 +138,29 @@ class AppointmentController {
 				.json({ error: `You can't create appointments with yourself` });
 		}
 
+		// /// AQUI!!
+
 		const user = await CRUD.findOne(User, {
-			where: { id: req.userId },
+			where: { user: req.userId },
+			include: [
+				{
+					model: User,
+					as: 'provider',
+					attributes: ['id', 'name'],
+					include: [
+						{
+							model: Address,
+							as: 'address',
+							attributes: ['id', 'street'],
+						},
+						{
+							model: Phone,
+							as: 'phones',
+							attributes: ['id', 'area_code', 'number'],
+						},
+					],
+				},
+			],
 		});
 
 		if (!user) {
@@ -177,11 +201,6 @@ class AppointmentController {
 			date: hourStart,
 		};
 
-		const userLocations = user.map(userLocation => [
-			userLocation.phone,
-			userLocation.address,
-		]);
-
 		const appointment = await CRUD.create(Appointment, appointmentData);
 
 		const notification = await NotificationController.create({
@@ -196,8 +215,8 @@ class AppointmentController {
 			email: provider.email,
 			providerName: provider.name,
 			client: user.name,
-			phone: userLocations,
-			address: user.addresses,
+			phone: user.phone,
+			address: user.address,
 			date: hourStart,
 			services,
 		});
