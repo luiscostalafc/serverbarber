@@ -71,9 +71,8 @@ class AppointmentMail {
 				context: {
 					providerName,
 					client: user.name,
-					ddd: user.phones.area_code,
-					phone: user.phones.number,
-					address: user.address.street,
+					phone: user.phones,
+					address: user.address,
 					services: items.description,
 					totalPrices: items.unit_price,
 					totalQuantities: items.quantity,
