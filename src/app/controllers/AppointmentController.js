@@ -189,6 +189,23 @@ class AppointmentController {
 			date: hourStart,
 		};
 
+		const users = await CRUD.findOne(User, {
+			where: { id: req.userId },
+			attributes: ['id', 'name'],
+			include: [
+				{
+					model: Address,
+					as: 'address',
+					attributes: ['id', 'user_id', 'street'],
+				},
+				{
+					model: Phone,
+					as: 'phones',
+					attributes: ['id', 'area_code', 'number'],
+				},
+			],
+		});
+
 		const appointment = await CRUD.create(Appointment, appointmentData);
 
 		const notification = await NotificationController.create({
@@ -202,9 +219,10 @@ class AppointmentController {
 			to: provider.name,
 			email: provider.email,
 			providerName: provider.name,
+			users,
 			user,
 			date: hourStart,
-			items,
+			services,
 		});
 
 		return res.json({ appointment, notification });
