@@ -202,13 +202,9 @@ class AppointmentController {
 			to: provider.name,
 			email: provider.email,
 			providerName: provider.name,
-			client: user.name,
-			phone: user.phones,
-			address: user.address,
+			user,
 			date: hourStart,
-			services: items.description,
-			totalPrices: items.unit_price,
-			totalQuantities: items.quantity,
+			item,
 		});
 
 		return res.json({ appointment, notification });
