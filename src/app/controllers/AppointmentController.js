@@ -164,7 +164,12 @@ class AppointmentController {
 		}
 
 		const services = items.map(service => service.description).join(', ');
-
+		const totalPrices = items
+			.map(totalPrice => totalPrice.unit_price)
+			.join(', ');
+		const totalQuantities = items
+			.map(totalQuantity => totalQuantity.quantity)
+			.join(', ');
 		const appointmentData = {
 			user_id: req.userId,
 			provider_id,
@@ -186,8 +191,12 @@ class AppointmentController {
 			email: provider.email,
 			providerName: provider.name,
 			client: user.name,
+			phone: user.phone,
+			address: user.addresses.street,
 			date: hourStart,
 			services,
+			totalPrices,
+			totalQuantities,
 		});
 
 		return res.json({ appointment, notification });
