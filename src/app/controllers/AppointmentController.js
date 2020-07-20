@@ -12,7 +12,6 @@ import NotificationController from './NotificationController';
 import AppointmentMail from '../jobs/AppointmentMail';
 import CancellationMail from '../jobs/CancellationMail';
 import Queue from '../../lib/Queue';
-// import { phone } from 'faker';
 
 class AppointmentController {
 	async index(req, res) {
@@ -141,24 +140,18 @@ class AppointmentController {
 		// /// AQUI!!
 
 		const user = await CRUD.findOne(User, {
-			where: { user: req.userId },
+			where: { id: req.userId },
+			attributes: ['id', 'name'],
 			include: [
 				{
-					model: User,
-					as: 'provider',
-					attributes: ['id', 'name'],
-					include: [
-						{
-							model: Address,
-							as: 'address',
-							attributes: ['id', 'street'],
-						},
-						{
-							model: Phone,
-							as: 'phones',
-							attributes: ['id', 'area_code', 'number'],
-						},
-					],
+					model: Address,
+					as: 'address',
+					attributes: ['id', 'user_id', 'street'],
+				},
+				{
+					model: Phone,
+					as: 'phones',
+					attributes: ['id', 'are_code', 'number'],
 				},
 			],
 		});
@@ -187,12 +180,12 @@ class AppointmentController {
 				.json({ error: 'Appointment date is not available' });
 		}
 
-		const services = items
-			.map(service => [
-				service.description,
-				service.unit_price,
-				service.quantity,
-			])
+		const services = items.map(service => service.description).join(', ');
+		const totalQuantities = items
+			.map(totalQuantity => totalQuantity.quantity)
+			.join(', ');
+		const totalPrices = items
+			.map(totalPrice => totalPrice.unit_price)
 			.join(', ');
 		const appointmentData = {
 			user_id: req.userId,
@@ -218,7 +211,7 @@ class AppointmentController {
 			phone: user.phone,
 			address: user.address,
 			date: hourStart,
-			services,
+			services: { totalQuantities, services, totalPrices },
 		});
 
 		return res.json({ appointment, notification });
