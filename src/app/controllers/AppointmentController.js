@@ -141,7 +141,7 @@ class AppointmentController {
 
 		const user = await CRUD.findOne(User, {
 			where: { id: req.userId },
-			attributes: ['id', 'name', 'street', 'area_code', 'number'],
+			attributes: ['id', 'name'],
 			include: [
 				{
 					model: Address,
@@ -180,7 +180,7 @@ class AppointmentController {
 				.json({ error: 'Appointment date is not available' });
 		}
 
-		const services = items.map(service => service.description).join(', ');
+		const services = items.map(service => service).join(', ');
 
 		const appointmentData = {
 			user_id: req.userId,
@@ -194,7 +194,7 @@ class AppointmentController {
 		const notification = await NotificationController.create({
 			user_id: req.userId,
 			provider_id,
-			items,
+			services,
 			date,
 		});
 

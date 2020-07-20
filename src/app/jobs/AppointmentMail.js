@@ -10,7 +10,7 @@ class AppointmentMail {
 	}
 
 	async handle({ data }) {
-		const { to, email, providerName, date, user, items } = data;
+		const { to, email, providerName, date, user, services } = data;
 
 		if (!to)
 			console.error(
@@ -24,10 +24,10 @@ class AppointmentMail {
 			console.error(
 				coloredLog(`📨 AppointmentMail handle error: Address not defined`)
 			);
-		if (!items)
-			console.error(
-				coloredLog(`📨 AppointmentMail handle error: Phone not defined`)
-			);
+		// if (!items)
+		// 	console.error(
+		// 		coloredLog(`📨 AppointmentMail handle error: Phone not defined`)
+		// 	);
 		if (!providerName)
 			console.error(
 				coloredLog(`📨 AppointmentMail handle error: PROVIDER NAME not defined`)
@@ -38,10 +38,10 @@ class AppointmentMail {
 		// 			`📨 AppointmentMail handle error: CLIENT/USER NAME not defined`
 		// 		)
 		// 	);
-		// if (!services)
-		// 	console.error(
-		// 		coloredLog(`📨 AppointmentMail handle error: SERVICES not defined`)
-		// 	);
+		if (!services)
+			console.error(
+				coloredLog(`📨 AppointmentMail handle error: SERVICES not defined`)
+			);
 		// if (!totalQuantities)
 		// 	console.error(
 		// 		coloredLog(
@@ -73,9 +73,7 @@ class AppointmentMail {
 					client: user.name,
 					phone: user.phones,
 					address: user.address,
-					services: items.description,
-					totalPrices: items.unit_price,
-					totalQuantities: items.quantity,
+					services,
 					appointmentDate,
 				},
 			});
