@@ -204,7 +204,7 @@ class AppointmentController {
 			providerName: provider.name,
 			client: user.name,
 			phone: user.phones,
-			address: user.address.street,
+			address: user.address,
 			date: hourStart,
 			services: items.description,
 			totalPrices: items.unit_price,
