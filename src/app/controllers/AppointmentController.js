@@ -213,8 +213,8 @@ class AppointmentController {
 			date: hourStart,
 			services,
 			total: totalPrices,
-			phone: userData.phone[0].number,
-			address: userData.address[0].street,
+			phone: userData.phone.number,
+			address: userData.address.street,
 		});
 
 		return res.json({ appointment, notification });
