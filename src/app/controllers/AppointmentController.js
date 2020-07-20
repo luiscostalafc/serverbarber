@@ -184,8 +184,8 @@ class AppointmentController {
 		await Queue.add(AppointmentMail.key, {
 			to: provider.name,
 			email: provider.email,
-			providerName: provider.name,
-			client: user,
+			provider,
+			user,
 			date,
 			services,
 		});

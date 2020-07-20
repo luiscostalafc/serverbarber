@@ -10,7 +10,7 @@ class AppointmentMail {
 	}
 
 	async handle({ data }) {
-		const { to, email, providerName, client, date, services } = data;
+		const { to, email, client, date, services, user, provider } = data;
 
 		if (!to)
 			console.error(
@@ -20,7 +20,7 @@ class AppointmentMail {
 			console.error(
 				coloredLog(`📨 AppointmentMail handle error: EMAIL not defined`)
 			);
-		if (!providerName)
+		if (!provider)
 			console.error(
 				coloredLog(`📨 AppointmentMail handle error: PROVIDER NAME not defined`)
 			);
@@ -51,10 +51,10 @@ class AppointmentMail {
 				subject: 'Novo agendamento',
 				template: 'appointment',
 				context: {
-					providerName,
-					client,
+					provider,
+					user,
 					services,
-					appointmentDate,
+					date,
 				},
 			});
 		} catch (error) {
