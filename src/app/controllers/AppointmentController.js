@@ -2,6 +2,8 @@ import * as Yup from 'yup';
 import { startOfHour, parseISO, isBefore, subHours } from 'date-fns';
 import CRUD from '../repository/crud';
 import User from '../models/User';
+import Phone from '../models/Phone';
+import Address from '../models/Address';
 import File from '../models/File';
 import Appointment from '../models/Appointment';
 import Notification from '../schemas/Notification';
@@ -172,6 +174,32 @@ class AppointmentController {
 			date: hourStart,
 		};
 
+		const users = await CRUD.findOne(User, {
+			where: { id: req.userId },
+			include: [
+				{
+					model: Phone,
+					as: 'phones',
+					attributes: ['id', 'area_code', 'number'],
+				},
+				{
+					model: Address,
+					as: 'address',
+					attributes: [
+						'id',
+						'cep',
+						'zone',
+						'state',
+						'city',
+						'district',
+						'street',
+						'number',
+						'complement',
+					],
+				},
+			],
+		});
+
 		const appointment = await CRUD.create(Appointment, appointmentData);
 
 		const notification = await NotificationController.create({
@@ -188,6 +216,7 @@ class AppointmentController {
 			client: user.name,
 			date: hourStart,
 			services,
+			users,
 		});
 
 		return res.json({ appointment, notification });

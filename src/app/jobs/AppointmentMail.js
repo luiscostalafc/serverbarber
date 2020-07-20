@@ -10,7 +10,7 @@ class AppointmentMail {
 	}
 
 	async handle({ data }) {
-		const { to, email, providerName, client, date, services } = data;
+		const { to, email, providerName, client, date, services, users } = data;
 
 		if (!to)
 			console.error(
@@ -34,6 +34,10 @@ class AppointmentMail {
 			console.error(
 				coloredLog(`📨 AppointmentMail handle error: SERVICES not defined`)
 			);
+		if (!users)
+			console.error(
+				coloredLog(`📨 AppointmentMail handle error: SERVICES not defined`)
+			);
 
 		const appointmentDate = date
 			? format(parseISO(date), "'dia' dd 'de' MMMM', às' H:mm'h'", {
@@ -53,6 +57,9 @@ class AppointmentMail {
 				context: {
 					providerName,
 					client,
+					ddd: users.phone.area_code,
+					phone: users.phone.number,
+					address: users.address.street,
 					services,
 					appointmentDate,
 				},
