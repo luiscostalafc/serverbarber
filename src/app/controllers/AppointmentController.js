@@ -2,6 +2,8 @@ import * as Yup from 'yup';
 import { startOfHour, parseISO, isBefore, subHours } from 'date-fns';
 import CRUD from '../repository/crud';
 import User from '../models/User';
+import Phone from '../models/Phone';
+import Address from '../models/Address';
 import File from '../models/File';
 import Appointment from '../models/Appointment';
 import Notification from '../schemas/Notification';
@@ -137,7 +139,32 @@ class AppointmentController {
 
 		const user = await CRUD.findOne(User, {
 			where: { id: req.userId },
+			include: [
+				{
+					model: Phone,
+					as: 'phones',
+					attributes: ['id', 'area_code', 'number'],
+				},
+				{
+					model: Address,
+					as: 'address',
+					attributes: [
+						'id',
+						'cep',
+						'zone',
+						'state',
+						'city',
+						'district',
+						'street',
+						'number',
+						'complement',
+					],
+				},
+			],
 		});
+
+		const address = user.address[0] || 'Não cadastrado';
+		const phones = user.phones[0] || 'Não cadastrado';
 
 		if (!user) {
 			return res.status(400).json({ error: `User not found` });
@@ -164,6 +191,7 @@ class AppointmentController {
 		}
 
 		const services = items.map(service => service.description).join(', ');
+		const total = items.reduce((prevVal, elem) => prevVal + elem.unit_price, 0);
 
 		const appointmentData = {
 			user_id: req.userId,
@@ -188,6 +216,9 @@ class AppointmentController {
 			client: user.name,
 			date: hourStart,
 			services,
+			total,
+			address,
+			phones,
 		});
 
 		return res.json({ appointment, notification });

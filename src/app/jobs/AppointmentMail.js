@@ -10,7 +10,17 @@ class AppointmentMail {
 	}
 
 	async handle({ data }) {
-		const { to, email, providerName, client, date, services } = data;
+		const {
+			to,
+			email,
+			providerName,
+			client,
+			date,
+			services,
+			total,
+			address,
+			phones,
+		} = data;
 
 		if (!to)
 			console.error(
@@ -55,6 +65,9 @@ class AppointmentMail {
 					client,
 					services,
 					appointmentDate,
+					total,
+					address,
+					phones,
 				},
 			});
 		} catch (error) {
