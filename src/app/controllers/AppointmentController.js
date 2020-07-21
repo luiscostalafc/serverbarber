@@ -163,8 +163,8 @@ class AppointmentController {
 			],
 		});
 
-		const address = user.address[0] || 'Não cadastrado';
-		const phones = user.phones[0] || 'Não cadastrado';
+		const address = user.address[0].street || 'Não cadastrado';
+		const phones = user.phones[0].number || 'Não cadastrado';
 
 		if (!user) {
 			return res.status(400).json({ error: `User not found` });
