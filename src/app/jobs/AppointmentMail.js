@@ -20,6 +20,7 @@ class AppointmentMail {
 			total,
 			address,
 			phones,
+			ddd,
 		} = data;
 
 		if (!to)
@@ -67,6 +68,7 @@ class AppointmentMail {
 					appointmentDate,
 					total,
 					address,
+					ddd,
 					phones,
 				},
 			});

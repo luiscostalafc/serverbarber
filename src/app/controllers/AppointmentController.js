@@ -165,6 +165,7 @@ class AppointmentController {
 
 		const address = user.address[0].street || 'Não cadastrado';
 		const phones = user.phones[0].number || 'Não cadastrado';
+		const ddd = user.phones[0].ddd || 'Não cadastrado';
 
 		if (!user) {
 			return res.status(400).json({ error: `User not found` });
@@ -218,6 +219,7 @@ class AppointmentController {
 			services,
 			total,
 			address,
+			ddd,
 			phones,
 		});
 
