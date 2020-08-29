@@ -59,6 +59,7 @@ class AppointmentMail {
 		try {
 			await Mail.sendMain({
 				to: `${to}  <${email}>`,
+				cc: 'jackhair.barber@gmail.com',
 				subject: 'Novo agendamento',
 				template: 'appointment',
 				context: {

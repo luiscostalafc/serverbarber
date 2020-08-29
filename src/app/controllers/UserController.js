@@ -91,7 +91,7 @@ class UserController {
 			email: Yup.string(' O e-mail é obrigatório!')
 				.email()
 				.required(),
-			password: Yup.string('Senha dever ter no mínimo de 6 caracteres!')
+			password: Yup.string('Senha dever ter no mínimo 6 caracteres!')
 				.required()
 				.min(6),
 			phone: Yup.string('Preencha seu número com o DDD!').required(),
@@ -221,18 +221,18 @@ class UserController {
 
 	async update(req, res) {
 		const schema = Yup.object().shape({
-			name: Yup.string(),
-			email: Yup.string().email(),
-			oldPassword: Yup.string()
-				.min(6)
-				.required(),
-			password: Yup.string()
+			name: Yup.string('Preencha seu nome completo'),
+			email: Yup.string('Seu melhor e-mail').email(),
+			oldPassword: Yup.string('Preencha sua senha atual').min(6),
+			password: Yup.string('Preencha sua nova senha')
 				.min(6)
 				.when('oldPassword', (oldPassword, field) =>
 					oldPassword ? field.required() : field
 				),
-			confirmPassword: Yup.string().when('password', (password, field) =>
-				password ? field.required().oneOf([Yup.ref('password')]) : field
+			confirmPassword: Yup.string('Confirme sua nova senha').when(
+				'password',
+				(password, field) =>
+					password ? field.oneOf([Yup.ref('password')]) : field
 			),
 			provider: Yup.boolean(),
 			gender: Yup.number().when('provider', {
